@@ -68,7 +68,7 @@ array_insert(array *arr, void *obj, unsigned index)
 	if(arr->count >= arr->buffer_size - 1)
 		array_resize(arr);
 	temp1 = obj;
-	for(i = index; i < arr->count; i++) {
+	for(i = index; i < arr->count; ++i) {
 		temp2 = arr->contents[i];
 		arr->contents[i] = temp1;
 		temp1 = temp2;
@@ -83,7 +83,7 @@ array_remove_object_at_index(array *arr, unsigned index)
 	int i;
 	if(index >= arr->count) return;
 	arr->contents[index] = NULL;
-	for(i = index; i < (arr->count - 1); i++) {
+	for(i = index; i < (arr->count - 1); ++i) {
 		arr->contents[index] = arr->contents[index + 1];
 		++index;		
 	}
@@ -119,7 +119,7 @@ array_insert_ordered(array *arr, void *obj, int (*compar)(const void*, const voi
 {
 	int index = 0;
 	while(index < arr->count && compar(&obj,&arr->contents[index]) >= 0) ++index;
-    array_insert(arr,obj,index);
+	array_insert(arr,obj,index);
 	return index;
 }
 
