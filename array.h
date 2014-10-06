@@ -2,23 +2,23 @@
 /* C implementation of mutable/resizeable array */
 /* ============================================ */
 
-typedef struct array array_t;
+typedef struct array array;
 
 /* construction/destruction */
 array_t *array_create(unsigned);
-array_t *array_free(array_t *);
+array_t *array_free(array *);
 
 /* accessors*/
-int array_index_of_object(array_t *, void *);
-void *array_object_at_index(array_t *, unsigned);
-unsigned array_count(array_t *);
+int array_index_of_object(array *, void *);
+void *array_object_at_index(array *, unsigned);
+unsigned array_count(array *);
 
 /* mutators */
-void array_add(array_t *, void *);
-void array_insert(array_t *, void *, unsigned);
-void array_remove_object_at_index(array_t *, unsigned);
+void array_add(array *, void *);
+void array_insert(array *, void *, unsigned);
+void array_remove_object_at_index(array *, unsigned);
 
 /* sorted behavior */
-void array_sort(array_t *, int (*compar)(const void *, const void *));
-int array_insert_ordered(array_t *, void *, int (*compar)(const void *, const void *));
-void *array_search (array_t *, const void *, int (*compar)(const void *, const void *));
+void array_sort(array *, int (*compar)(const void *, const void *));
+int array_insert_ordered(array *, void *, int (*compar)(const void *, const void *));
+void *array_search (array *, const void *, int (*compar)(const void *, const void *));
