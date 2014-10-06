@@ -5,8 +5,8 @@
 typedef struct array array;
 
 /* construction/destruction */
-array_t *array_create(unsigned);
-array_t *array_free(array *);
+array *array_create(unsigned);
+array *array_free(array *);
 
 /* accessors*/
 int array_index_of_object(array *, void *);
