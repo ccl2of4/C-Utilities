@@ -11,13 +11,13 @@ struct array {
 	unsigned count;
 };
 
-void array_resize(array_t *arr);
+void array_resize(array *arr);
 
-array_t *
+array *
 array_create(unsigned buffer_size)
 {
 	if(!buffer_size) buffer_size = DEFAULT_SIZE;
-	array_t *arr = malloc(sizeof(array_t));
+	array *arr = malloc(sizeof(array_t));
 	if(!arr) { printf("Out of memory."); exit(1); }
 	arr->count = 0;
 	arr->contents = NULL;
@@ -25,15 +25,15 @@ array_create(unsigned buffer_size)
 	return arr;
 }
 
-array_t *
-array_free (array_t *arr)
+array *
+array_free (array *arr)
 {
 	free(arr->contents);
 	return arr;
 }
 
 void
-array_resize(array_t *arr)
+array_resize(array *arr)
 {
 	if(!arr->contents) {
 		arr->contents = malloc(DEFAULT_SIZE * sizeof(void *));
@@ -41,20 +41,19 @@ array_resize(array_t *arr)
 		arr->buffer_size = DEFAULT_SIZE;
 	}
 	else {
-		arr->contents = realloc(arr->contents,arr->buffer_size * 2 * sizeof(void *));
+		arr->contents = realloc(arr->contents,(arr->buffer_size *= 2) * sizeof(void *));
 		if(!arr->contents) { printf("Out of memory.\n"); exit(1); }
-		arr->buffer_size *= 2;
 	}
 }
 
 unsigned
-array_count(array_t *arr)
+array_count(array *arr)
 {
 	return arr->count;
 }
 
 void
-array_add(array_t *arr, void *obj)
+array_add(array *arr, void *obj)
 {
 	if(!obj) return;
 	if(arr->count >= arr->buffer_size - 1)
@@ -63,7 +62,7 @@ array_add(array_t *arr, void *obj)
 }
 
 void
-array_insert(array_t *arr, void *obj, unsigned index)
+array_insert(array *arr, void *obj, unsigned index)
 {
 	int i;
 	void *temp1 = NULL;
@@ -86,7 +85,7 @@ array_insert(array_t *arr, void *obj, unsigned index)
 }
 
 void
-array_remove_object_at_index(array_t *arr, unsigned index)
+array_remove_object_at_index(array *arr, unsigned index)
 {
 	int i;
 	if(index >= arr->count) return;
@@ -99,7 +98,7 @@ array_remove_object_at_index(array_t *arr, unsigned index)
 }
 
 int
-array_index_of_object(array_t *arr, void *obj)
+array_index_of_object(array *arr, void *obj)
 {
 	int result = 0;
 	while(result < arr->count) {
@@ -110,20 +109,20 @@ array_index_of_object(array_t *arr, void *obj)
 }
 
 void *
-array_object_at_index(array_t *arr, unsigned index)
+array_object_at_index(array *arr, unsigned index)
 {
 	if(index >= arr->count) return NULL;
 	return arr->contents[index];
 }
 
 void
-array_sort(array_t *arr, int (*compar)(const void*, const void*))
+array_sort(array *arr, int (*compar)(const void*, const void*))
 {
 	qsort(arr->contents, arr->count, sizeof(void *), compar);
 }
 
 int
-array_insert_ordered(array_t *arr, void *obj, int (*compar)(const void*, const void*))
+array_insert_ordered(array *arr, void *obj, int (*compar)(const void*, const void*))
 {
 	int index = 0;
 	while(index < arr->count && compar(&obj,&arr->contents[index]) >= 0) ++index;
@@ -132,7 +131,7 @@ array_insert_ordered(array_t *arr, void *obj, int (*compar)(const void*, const v
 }
 
 void *
-array_search (array_t *arr, const void *key, int (*compar)(const void *, const void *))
+array_search (array *arr, const void *key, int (*compar)(const void *, const void *))
 {
 	return *(void **)bsearch (key, arr->contents, arr->count, sizeof(void *), compar);
 }
