@@ -36,9 +36,8 @@ void
 array_resize(array *arr)
 {
 	if(!arr->contents) {
-		arr->contents = malloc(DEFAULT_SIZE * sizeof(void *));
+		arr->contents = malloc((arr->buffer_size = DEFAULT_SIZE) * sizeof(void *));
 		if(!arr->contents) { printf("Out of memory.\n"); exit(1); }
-		arr->buffer_size = DEFAULT_SIZE;
 	}
 	else {
 		arr->contents = realloc(arr->contents,(arr->buffer_size *= 2) * sizeof(void *));
