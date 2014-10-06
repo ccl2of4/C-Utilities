@@ -54,10 +54,7 @@ array_count(array *arr)
 void
 array_add(array *arr, void *obj)
 {
-	if(!obj) return;
-	if(arr->count >= arr->buffer_size - 1)
-		array_resize(arr);
-	arr->contents[arr->count++] = obj;
+	return array_insert (arr, obj, arr->count);
 }
 
 void
@@ -66,21 +63,18 @@ array_insert(array *arr, void *obj, unsigned index)
 	int i;
 	void *temp1 = NULL;
 	void *temp2 = NULL;
-	if(index == arr->count)
-		array_add(arr,obj);
-	else {
-		if(!obj) return;
-		if(arr->count >= arr->buffer_size - 1)
-			array_resize(arr);
-		temp1 = obj;
-		for(i = index; i < arr->count; i++) {
-			temp2 = arr->contents[i];
-			arr->contents[i] = temp1;
-			temp1 = temp2;
-		}
+
+	if(!obj) return;
+	if(arr->count >= arr->buffer_size - 1)
+		array_resize(arr);
+	temp1 = obj;
+	for(i = index; i < arr->count; i++) {
+		temp2 = arr->contents[i];
 		arr->contents[i] = temp1;
-		arr->count++;
+		temp1 = temp2;
 	}
+	arr->contents[i] = temp1;
+	arr->count++;
 }
 
 void
