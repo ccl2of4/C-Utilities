@@ -17,7 +17,7 @@ array *
 array_create(unsigned buffer_size)
 {
 	if(!buffer_size) buffer_size = DEFAULT_SIZE;
-	array *arr = malloc(sizeof(array_t));
+	array *arr = malloc(sizeof(struct array));
 	if(!arr) { printf("Out of memory."); exit(1); }
 	arr->count = 0;
 	arr->contents = NULL;
