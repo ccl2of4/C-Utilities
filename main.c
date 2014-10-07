@@ -54,6 +54,7 @@ static void
 test_list (void) {
 	int i;
 	list_ref list = list_create ();
+	iterator_ref iterator;
 
 	for (i = 0; i < 10; ++i) {
 		number_ref num = number_create_int (i);
@@ -61,11 +62,13 @@ test_list (void) {
 		object_release (num);
 	}
 
-	for (i = 0; i < 10; ++i) {
-		number_ref num = list_get (list, i);
+	for (iterator = list_create_iterator (list), i = 0; iterator_has_next (iterator); ++i) {
+		number_ref num = iterator_next (iterator);
+		assert (i < 10);
 		assert (number_int_value (num) == i);
 	}
 	
+	object_release (iterator);
 	object_release (list);
 }
 

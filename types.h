@@ -11,6 +11,7 @@ typedef void * queue_ref;
 typedef void * stack_ref;
 typedef void * hash_map_ref;
 typedef void * number_ref;
+typedef void * iterator_ref;
 
 #include "object.h"
 #include "number.h"
@@ -19,5 +20,6 @@ typedef void * number_ref;
 #include "array.h"
 #include "list.h"
 #include "hash_map.h"
+#include "iterator.h"
 
 #endif

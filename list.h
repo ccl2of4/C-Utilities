@@ -12,4 +12,6 @@ void list_insert (list_ref, object_ref, unsigned);
 void list_remove (list_ref, unsigned);
 object_ref list_get (list_ref, unsigned);
 
+iterator_ref list_create_iterator (list_ref);
+
 #endif
