@@ -5,56 +5,56 @@
 number *number_create (void) {
 	number *number = Calloc (1, sizeof (struct number));
 	number_init (number);
-	type_retain ((type *)number);
+	object_retain ((object *)number);
 	return number;
 }
 
 void number_init (number *number) {
-	type_init ((type *)number);
-	((type *)number)->type_equals = _type_equals_number;
-	((type *)number)->type_hash = _type_hash_number;
+	object_init ((object *)number);
+	((object *)number)->object_equals = _object_equals_number;
+	((object *)number)->object_hash = _object_hash_number;
 }
 
 bool
-_type_equals_number (type *_self, type *_other) {
+_object_equals_number (object *_self, object *_other) {
 	number *self = (number *)_self;
 	number *other = (number *)_other;
 	if (self->number_type != other->number_type) return false;
 	switch (self->number_type) {
-		case number_type_char:
+		case number_object_char:
 			return self->char_val == other->char_val;
-		case number_type_short:
+		case number_object_short:
 			return self->short_val == other->short_val;
-		case number_type_int:
+		case number_object_int:
 			return self->int_val == other->int_val;
-		case number_type_long:
+		case number_object_long:
 			return self->long_val == other->long_val;
-		case number_type_long_long:
+		case number_object_long_long:
 			return self->long_long_val == other->long_long_val;
-		case number_type_float:
+		case number_object_float:
 			return self->float_val == other->float_val;
-		case number_type_double:
+		case number_object_double:
 			return self->double_val == other->double_val;
 	}
 }
 
 int
-_type_hash_number (type *_self) {
+_object_hash_number (object *_self) {
 	number *self = (number *)_self;
 	switch (self->number_type) {
-		case number_type_char:
+		case number_object_char:
 			return self->char_val;
-		case number_type_short:
+		case number_object_short:
 			return self->short_val;
-		case number_type_int:
+		case number_object_int:
 			return self->int_val;
-		case number_type_long:
+		case number_object_long:
 			return self->long_val;
-		case number_type_long_long:
+		case number_object_long_long:
 			return self->long_long_val;
-		case number_type_float:
+		case number_object_float:
 			return self->float_val;
-		case number_type_double:
+		case number_object_double:
 			return self->double_val;
 	}
 }
@@ -63,27 +63,27 @@ _type_hash_number (type *_self) {
 number *number_create_char (char val) {
 	number *number = number_create ();
 	number->char_val = val;
-	number->number_type = number_type_char;
+	number->number_type = number_object_char;
 }
 number *number_create_short (short val) {
 	number *number = number_create ();
 	number->char_val = val;
-	number->number_type = number_type_char;
+	number->number_type = number_object_char;
 }
 number *number_create_int (int val) {
 	number *number = number_create ();
 	number->int_val = val;
-	number->number_type = number_type_int;
+	number->number_type = number_object_int;
 }
 number *number_create_long (long val) {
 	number *number = number_create ();
 	number->long_val = val;
-	number->number_type = number_type_long;
+	number->number_type = number_object_long;
 }
 number *number_create_long_long (long long val) {
 	number *number = number_create ();
 	number->long_long_val = val;
-	number->number_type = number_type_long_long;
+	number->number_type = number_object_long_long;
 }
 number *number_create_unsigned_char (unsigned char val) {
 	return number_create_char ((char)val);
@@ -103,12 +103,12 @@ number *number_create_unsigned_long_long (unsigned long long val) {
 number *number_create_float (float val) {
 	number *number = number_create ();
 	number->float_val = val;
-	number->number_type = number_type_float;
+	number->number_type = number_object_float;
 }
 number *number_create_double (double val) {
 	number *number = number_create ();
 	number->double_val = val;
-	number->number_type = number_type_double;
+	number->number_type = number_object_double;
 }
 
 

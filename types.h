@@ -5,7 +5,7 @@
 #include <stddef.h>
 
 /* opaque types */
-typedef struct type type;
+typedef struct object object;
 typedef struct array array;
 typedef struct list list;
 typedef struct queue queue;
@@ -13,7 +13,7 @@ typedef struct stack stack;
 typedef struct hash_map hash_map;
 typedef struct number number;
 
-#include "type.h"
+#include "object.h"
 #include "number.h"
 #include "queue.h"
 #include "stack.h"

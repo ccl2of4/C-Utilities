@@ -1,18 +1,18 @@
 #ifndef _array_h
 #define _array_h
 
-#include "_type.h"
+#include "_object.h"
 
 struct array {
-	struct type base;
-	type ** contents;
+	struct object base;
+	object ** contents;
 	unsigned buffer_size;
 	unsigned count;
 };
 
 void array_resize(array *);
 void array_init (array *);
-void _type_dealloc_array (type *);
+void _object_dealloc_array (object *);
 
 #define DEFAULT_SIZE 10
 #define RESIZE_FACTOR 2

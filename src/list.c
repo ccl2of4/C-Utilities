@@ -6,18 +6,18 @@ list *
 list_create (void) {
 	list *list = Calloc (1,sizeof (struct list));
 	list_init (list);
-	type_retain ((type *)list);
+	object_retain ((object *)list);
 	return list;
 }
 
 void
 list_init (list *list) {
-	type_init (&list->base);
-	((type *)list)->type_dealloc = _type_dealloc_list;
+	object_init (&list->base);
+	((object *)list)->object_dealloc = _object_dealloc_list;
 }
 
 void
-_type_dealloc_list (type *t) {
+_object_dealloc_list (object *t) {
 	list *list = (struct list *)t;
 	list_set_head (list, NULL);
 }
@@ -31,11 +31,11 @@ void
 list_set_head (list *this, list_node *head) {
 	if (this->head != head) {
 		if (this->head) {
-			type_release ((type *)this->head);
+			object_release ((object *)this->head);
 		}
 		this->head = head;
 		if (this->head)
-			type_retain ((type *)this->head);
+			object_retain ((object *)this->head);
 	}
 }
 
@@ -46,13 +46,13 @@ list_count (list *list) {
 }
 
 void
-list_add (list *list, type *obj) {
+list_add (list *list, object *obj) {
 	assert (list && obj);
 	return list_insert (list, obj, list->count);
 }
 
 void
-list_insert (list *list, type *obj, unsigned idx) {
+list_insert (list *list, object *obj, unsigned idx) {
 	struct list_node *new_node = list_node_create ();
 	struct list_node *left_node = NULL;
 	struct list_node *right_node = list_get_head (list);
@@ -72,7 +72,7 @@ list_insert (list *list, type *obj, unsigned idx) {
 
 	list_node_set_next (new_node, right_node);
 
-	type_release ((type *)new_node);
+	object_release ((object *)new_node);
 	++list->count;
 }
 
@@ -93,7 +93,7 @@ list_remove (list *list, unsigned idx) {
 	--list->count;
 }
 
-type *
+object *
 list_get (list *list, unsigned idx) {
 	struct list_node *node = list_get_head (list);
 	assert (list && (idx < list->count));
@@ -107,23 +107,23 @@ list_node *
 list_node_create (void) {
 	list_node *node = Calloc (1,sizeof (struct list_node));
 	list_node_init (node);
-	type_retain ((type *)node);
+	object_retain ((object *)node);
 	return node;
 }
 
 void
 list_node_init (list_node *node) {
-	type_init (&node->base);
-	((type *)node)->type_dealloc = _type_dealloc_list_node;
+	object_init (&node->base);
+	((object *)node)->object_dealloc = _object_dealloc_list_node;
 }
 
-type *
+object *
 list_node_get_obj (list_node *node) {
 	return node->obj;
 }
 
 void
-list_node_set_obj (list_node *node, type *obj) {
+list_node_set_obj (list_node *node, object *obj) {
 	RETAINED_MEMBER_SWAP (node,obj,obj);
 }
 
@@ -138,7 +138,7 @@ list_node_set_next (list_node *self, list_node *next) {
 }
 
 void
-_type_dealloc_list_node (type *t) {
+_object_dealloc_list_node (object *t) {
 	list_node* list_node = (struct list_node *)t;
 	list_node_set_obj (list_node, NULL);
 	list_node_set_next (list_node, NULL);

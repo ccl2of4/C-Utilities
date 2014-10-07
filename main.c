@@ -13,15 +13,15 @@ test_number (void) {
 	assert (number_int_value (num1) == -10);
 	assert (number_int_value (num2) == -10);
 	assert (number_int_value (num3) == 17);
-	assert (type_equals ((type *)num1, (type *)num2));
-	assert (!type_equals ((type *)num1, (type *)num3));
-	assert (type_hash ((type *)num1) == type_hash ((type *)num2));
-	assert (type_hash ((type *)num1) != type_hash ((type *)num3));
-	assert (type_hash ((type *)num2) != type_hash ((type *)num3));
+	assert (object_equals ((object *)num1, (object *)num2));
+	assert (!object_equals ((object *)num1, (object *)num3));
+	assert (object_hash ((object *)num1) == object_hash ((object *)num2));
+	assert (object_hash ((object *)num1) != object_hash ((object *)num3));
+	assert (object_hash ((object *)num2) != object_hash ((object *)num3));
 
-	type_release ((type *)num1);
-	type_release ((type *)num2);
-	type_release ((type *)num3);
+	object_release ((object *)num1);
+	object_release ((object *)num2);
+	object_release ((object *)num3);
 }
 
 static void
@@ -31,8 +31,8 @@ test_array (void) {
 
 	for (i = 0; i < 10; ++i) {
 		number *num = number_create_int (i);
-		array_add (array, (type *)num);
-		type_release ((type *)num);
+		array_add (array, (object *)num);
+		object_release ((object *)num);
 	}
 
 	for (i = 9; i >= 0; --i) {
@@ -41,13 +41,13 @@ test_array (void) {
 	}
 
 	for (i = 0; array_count (array); ++i) {
-		number *num = (number *)type_retain (array_object_at_index (array, 0));
+		number *num = (number *)object_retain (array_object_at_index (array, 0));
 		array_remove (array, 0);
 		assert (number_int_value (num) == i);
-		type_release ((type *)num);
+		object_release ((object *)num);
 	}
 
-	type_release ((type *)array);
+	object_release ((object *)array);
 }
 
 static void
@@ -57,8 +57,8 @@ test_list (void) {
 
 	for (i = 0; i < 10; ++i) {
 		number *num = number_create_int (i);
-		list_add (list, (type *)num);
-		type_release ((type *)num);
+		list_add (list, (object *)num);
+		object_release ((object *)num);
 	}
 
 	for (i = 0; i < 10; ++i) {
@@ -66,7 +66,7 @@ test_list (void) {
 		assert (number_int_value (num) == i);
 	}
 	
-	type_release ((type *)list);
+	object_release ((object *)list);
 }
 
 static void
@@ -76,18 +76,18 @@ test_stack (void) {
 
 	for (i = 0; i < 10; ++i) {
 		number *num = number_create_int (i);
-		stack_push (stack, (type *)num);
-		type_release ((type *)num);
+		stack_push (stack, (object *)num);
+		object_release ((object *)num);
 	}
 
 	for (i = 0; i < 10; ++i) {
-		number *num = (number *)type_retain(stack_top (stack));
+		number *num = (number *)object_retain(stack_top (stack));
 		stack_pop (stack);
 		assert (number_int_value (num) == 9 - i);
-		type_release ((type *)num);
+		object_release ((object *)num);
 	}
 
-	type_release ((type *)stack);
+	object_release ((object *)stack);
 }
 
 static void
@@ -97,18 +97,18 @@ test_queue (void) {
 
 	for (i = 0; i < 1; ++i) {
 		number *num = number_create_int (i);
-		queue_push (queue, (type *)num);
-		type_release ((type *)num);
+		queue_push (queue, (object *)num);
+		object_release ((object *)num);
 	}
 
 	for (i = 0; i < 1; ++i) {
-		number *num = (number *)type_retain (queue_front (queue));
+		number *num = (number *)object_retain (queue_front (queue));
 		queue_pop (queue);
 		assert (number_int_value (num) == i);
-		type_release ((type *)num);
+		object_release ((object *)num);
 	}
 
-	type_release ((type *)queue);
+	object_release ((object *)queue);
 }
 
 static void
@@ -118,21 +118,21 @@ test_hash_map (void) {
 
 	for (i = 0; i < 10; ++i) {
 		number *key = number_create_int (i);
-		number *object = number_create_int (i + 1);
-		hash_map_set (hash_map, (type *)key, (type *)object);
-		type_release ((type *)key);
-		type_release ((type *)object);
+		number *obj = number_create_int (i + 1);
+		hash_map_set (hash_map, (object *)key, (object *)obj);
+		object_release ((object *)key);
+		object_release ((object *)obj);
 	}
 
 	for (i = 0; i < 10; ++i) {
 		number *key = number_create_int (i);
-		number *object = (number *)hash_map_get (hash_map, (type *)key);
-		assert (object);
-		assert (number_int_value (object) == i + 1);
-		type_release ((type *)key);
+		number *obj = (number *)hash_map_get (hash_map, (object *)key);
+		assert (obj);
+		assert (number_int_value (obj) == i + 1);
+		object_release ((object *)key);
 	}
 
-	type_release ((type *)hash_map);
+	object_release ((object *)hash_map);
 }
 
 int

@@ -1,14 +1,14 @@
 #ifndef _queue_h
 #define _queue_h
 
-#include "_type.h"
+#include "_object.h"
 
 struct queue {
-	struct type base;
+	struct object base;
 	list *list;
 };
 
 void queue_init (queue *);
-void _type_dealloc_queue (type *);
+void _object_dealloc_queue (object *);
 
 #endif

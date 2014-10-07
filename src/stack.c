@@ -7,21 +7,21 @@ stack *
 stack_create (void) {
 	stack *stack = Calloc (1, sizeof (struct stack));
 	stack_init (stack);
-	type_retain ((type *)stack);
+	object_retain ((object *)stack);
 	return stack;
 }
 
 void
 stack_init (stack *stack) {
-	type_init (&stack->base);
-	((type *)stack)->type_dealloc = _type_dealloc_stack;
+	object_init (&stack->base);
+	((object *)stack)->object_dealloc = _object_dealloc_stack;
 	stack->array = array_create ();
 }
 
 void
-_type_dealloc_stack (type *t) {
+_object_dealloc_stack (object *t) {
 	stack *s = (stack *)t;
-	type_release ((type *)s->array);
+	object_release ((object *)s->array);
 }
 
 /*
@@ -40,7 +40,7 @@ stack_free (stack *stack) {
 }
 */
 void
-stack_push (stack *stack, type *obj) {
+stack_push (stack *stack, object *obj) {
 	array_add (stack->array, obj);
 }
 
@@ -49,7 +49,7 @@ void stack_pop (stack *stack) {
 	array_remove (stack->array, array_count (stack->array) - 1);
 }
 
-type *
+object *
 stack_top (stack *stack) {
 	return array_object_at_index (stack->array, array_count (stack->array) - 1);
 }

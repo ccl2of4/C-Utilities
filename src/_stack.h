@@ -1,14 +1,14 @@
 #ifndef _stack_h
 #define _stack_h
 
-#include "_type.h"
+#include "_object.h"
 
 struct stack {
-	struct type base;
+	struct object base;
 	array *array;
 };
 
 void stack_init (stack *);
-void _type_dealloc_stack (type *);
+void _object_dealloc_stack (object *);
 
 #endif

@@ -5,8 +5,8 @@
 
 hash_map *hash_map_create (void);
 
-type *hash_map_get (hash_map *, type *);
-void hash_map_set (hash_map *, type *, type *);
+object *hash_map_get (hash_map *, object *);
+void hash_map_set (hash_map *, object *, object *);
 unsigned hash_map_count (hash_map *);
 
 #endif

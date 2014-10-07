@@ -5,8 +5,8 @@
 
 stack *stack_create (void);
 
-void stack_push (stack *, type *);
+void stack_push (stack *, object *);
 void stack_pop (stack *);
-type *stack_top (stack *);
+object *stack_top (stack *);
 
 #endif

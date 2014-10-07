@@ -7,20 +7,20 @@ queue *
 queue_create (void) {
 	queue *queue = Calloc (1, sizeof (struct queue));
 	queue_init (queue);
-	type_retain ((type *)queue);
+	object_retain ((object *)queue);
 	return queue;
 }
 
 void
 queue_init (queue *queue) {
-	type_init (&queue->base);
-	((type *)queue)->type_dealloc = _type_dealloc_queue;
+	object_init (&queue->base);
+	((object *)queue)->object_dealloc = _object_dealloc_queue;
 	queue->list = list_create ();
 }
 
-void _type_dealloc_queue (type *t) {
+void _object_dealloc_queue (object *t) {
 	queue *q = (queue *)t;
-	type_release ((type *)q->list);
+	object_release ((object *)q->list);
 }
 
 /*
@@ -39,7 +39,7 @@ queue_free (queue *queue) {
 }
 */
 void
-queue_push (queue *queue, type *obj) {
+queue_push (queue *queue, object *obj) {
 	list_add (queue->list, obj);
 }
 
@@ -49,7 +49,7 @@ queue_pop (queue *queue) {
 	list_remove (queue->list, 0);
 }
 
-type *
+object *
 queue_front (queue *queue) {
 	return list_get (queue->list, 0);
 }

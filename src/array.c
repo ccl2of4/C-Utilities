@@ -7,23 +7,23 @@ array_create(void)
 {
 	array *arr = Calloc(1,sizeof(struct array));
 	array_init (arr);
-	type_retain ((type *)arr);
+	object_retain ((object *)arr);
 	return arr;
 }
 
 void
 array_init (array *arr) {
-	type_init (&arr->base);
-	((type *)arr)->type_dealloc = _type_dealloc_array;
+	object_init (&arr->base);
+	((object *)arr)->object_dealloc = _object_dealloc_array;
 	array_resize (arr);
 }
 
 void
-_type_dealloc_array (type *t) {
+_object_dealloc_array (object *t) {
 	array* arr = (array *)t;
 	int i;
 	for (i = 0; i < array_count (arr); ++i)
-		type_release (array_object_at_index (arr, i));
+		object_release (array_object_at_index (arr, i));
 	Free (arr->contents);
 }
 
@@ -32,9 +32,9 @@ array_resize(array *arr)
 {
 	assert (arr);
 	if(!arr->contents)
-		arr->contents = Malloc((arr->buffer_size = DEFAULT_SIZE) * sizeof(struct type *));
+		arr->contents = Malloc((arr->buffer_size = DEFAULT_SIZE) * sizeof(struct object *));
 	else
-		arr->contents = Realloc(arr->contents,(arr->buffer_size *= 2) * sizeof(struct type *));
+		arr->contents = Realloc(arr->contents,(arr->buffer_size *= 2) * sizeof(struct object *));
 }
 
 unsigned
@@ -45,17 +45,17 @@ array_count(array *arr)
 }
 
 void
-array_add(array *arr, type *obj)
+array_add(array *arr, object *obj)
 {
 	return array_insert (arr, obj, arr->count);
 }
 
 void
-array_insert(array *arr, type *obj, unsigned index)
+array_insert(array *arr, object *obj, unsigned index)
 {
 	int i;
-	type *temp1 = NULL;
-	type *temp2 = NULL;
+	object *temp1 = NULL;
+	object *temp2 = NULL;
 	assert (arr && obj && (index <= arr->count));
 
 	if(arr->count >= arr->buffer_size - 1)
@@ -66,7 +66,7 @@ array_insert(array *arr, type *obj, unsigned index)
 		arr->contents[i] = temp1;
 		temp1 = temp2;
 	}
-	type_retain (obj);
+	object_retain (obj);
 	arr->contents[i] = temp1;
 	arr->count++;
 }
@@ -75,7 +75,7 @@ void
 array_remove(array *arr, unsigned index)
 {
 	int i;
-	type *retval;
+	object *retval;
 	assert (arr && (index < arr->count));
 	retval = arr->contents[index];
 
@@ -85,11 +85,11 @@ array_remove(array *arr, unsigned index)
 		++index;		
 	}
 	arr->count--;
-	type_release (retval);
+	object_release (retval);
 }
 
 int
-array_index_of_object(array *arr, type *obj)
+array_index_of_object(array *arr, object *obj)
 {
 	int result = 0;
 	assert (arr && obj);
@@ -100,7 +100,7 @@ array_index_of_object(array *arr, type *obj)
 	return -1;
 }
 
-type *
+object *
 array_object_at_index(array *arr, unsigned index)
 {
 	assert (arr && (index < arr->count));

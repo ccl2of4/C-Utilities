@@ -1,20 +1,20 @@
 #ifndef _number_h
 #define _number_h
 
-#include "_type.h"
+#include "_object.h"
 
 typedef enum number_type {
-	number_type_char,
-	number_type_short,
-	number_type_int,
-	number_type_long,
-	number_type_long_long,
-	number_type_float,
-	number_type_double,
+	number_object_char,
+	number_object_short,
+	number_object_int,
+	number_object_long,
+	number_object_long_long,
+	number_object_float,
+	number_object_double,
 } number_type;
 
 struct number {
-	struct type base;
+	struct object base;
 	union {
 		char char_val;
 		short short_val;
@@ -28,7 +28,7 @@ struct number {
 };
 
 void number_init (number *);
-bool _type_equals_number (type *, type *);
-int _type_hash_number (type *);
+bool _object_equals_number (object *, object *);
+int _object_hash_number (object *);
 
 #endif

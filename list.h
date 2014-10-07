@@ -7,9 +7,9 @@ list *list_create (void);
 
 unsigned list_count (list *);
 
-void list_add (list *, type *);
-void list_insert (list *, type *, unsigned);
+void list_add (list *, object *);
+void list_insert (list *, object *, unsigned);
 void list_remove (list *, unsigned);
-type *list_get (list *, unsigned);
+object *list_get (list *, unsigned);
 
 #endif

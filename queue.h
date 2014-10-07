@@ -5,8 +5,8 @@
 
 queue *queue_create (void);
 
-void queue_push (queue *, type *);
+void queue_push (queue *, object *);
 void queue_pop (queue *);
-type *queue_front (queue *);
+object *queue_front (queue *);
 
 #endif
