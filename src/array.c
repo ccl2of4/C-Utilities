@@ -106,3 +106,39 @@ array_object_at_index(array_ref _self, unsigned index)
 	assert ((index < self->count));
 	return self->contents[index];
 }
+
+iterator_ref
+array_create_iterator (array_ref _self) {
+	struct array *self = _self;
+	return array_iterator_create (self);
+}
+
+/* array_iterator */
+array_iterator_ref
+array_iterator_create (array_ref array) {
+	struct array_iterator *self = Calloc (1, sizeof (struct array_iterator));
+	array_iterator_init (self);
+	object_retain (self);
+	self->array = array;
+	return self;
+}
+
+void
+array_iterator_init (array_iterator_ref _self) {
+	struct array_iterator *self = _self;
+	iterator_init (self);
+	((struct iterator *)self)->iterator_has_next = _iterator_has_next__array_iterator;
+	((struct iterator *)self)->iterator_next = _iterator_next__array_iterator;
+}
+
+object_ref
+_iterator_next__array_iterator (array_iterator_ref _self) {
+	struct array_iterator *self = _self;
+	return array_object_at_index (self->array, self->current_idx++);
+}
+
+bool
+_iterator_has_next__array_iterator (array_iterator_ref _self) {
+	struct array_iterator *self = _self;
+	return self->current_idx < array_count (self->array);
+}

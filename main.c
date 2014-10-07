@@ -28,6 +28,7 @@ static void
 test_array (void) {
 	int i;
 	array_ref array = array_create ();
+	iterator_ref iterator;
 
 	for (i = 0; i < 10; ++i) {
 		number_ref num = number_create_int (i);
@@ -40,13 +41,13 @@ test_array (void) {
 		assert (number_int_value (num) == i);
 	}
 
-	for (i = 0; array_count (array); ++i) {
-		number_ref num = object_retain (array_object_at_index (array, 0));
-		array_remove (array, 0);
+	for (iterator = array_create_iterator (array), i = 0; iterator_has_next (iterator); ++i) {
+		number_ref num = iterator_next (iterator);
+		assert (i < 10);
 		assert (number_int_value (num) == i);
-		object_release (num);
 	}
 
+	object_release (iterator);
 	object_release (array);
 }
 

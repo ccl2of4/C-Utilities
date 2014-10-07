@@ -3,6 +3,18 @@
 
 #include "types.h"
 
+//inherited from object
+object_ref object_retain (object_ref);
+void object_release (object_ref);
+void object_dealloc (object_ref);
+bool object_equals (object_ref, object_ref);
+int object_hash (object_ref);
+
+
+//number
+
+/* this class needs refactoring */
+
 /* creation */
 number_ref number_create_char (char);
 number_ref number_create_short (short);
