@@ -86,6 +86,7 @@ hash_map_set (hash_map *self, type *key, type *value) {
 
 	list_add (*list, (type *)node);
 	type_release ((type *)node);
+	++self->count;
 }
 
 unsigned
