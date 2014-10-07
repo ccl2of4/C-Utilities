@@ -3,10 +3,6 @@
 
 #include "types.h"
 
-/* ============================================ */
-/* C implementation of mutable/resizeable array */
-/* ============================================ */
-
 /* construction/destruction */
 array *array_create (void);
 

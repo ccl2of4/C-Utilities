@@ -13,7 +13,27 @@ test_number (void) {
 
 static void
 test_array (void) {
+	int i;
 	array *array = array_create ();
+
+	for (i = 0; i < 10; ++i) {
+		number *num = number_create_int (i);
+		array_add (array, (type *)num);
+		type_release ((type *)num);
+	}
+
+	for (i = 9; i >= 0; --i) {
+		number *num = (number *)array_object_at_index (array, i);
+		assert (number_int_value (num) == i);
+	}
+
+	for (i = 0; array_count (array); ++i) {
+		number *num = (number *)type_retain (array_object_at_index (array, 0));
+		array_remove (array, 0);
+		assert (number_int_value (num) == i);
+		type_release ((type *)num);
+	}
+
 	type_release ((type *)array);
 }
 
