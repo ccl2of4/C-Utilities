@@ -17,10 +17,10 @@ void Free (void *);
 #define RETAINED_MEMBER_SWAP(self, a, b) do {\
 	if (self->a != b) {\
 		if (self->a)\
-			object_release ((object *)self->a);\
+			object_release (self->a);\
 		self->a = b;\
 		if (self->a)\
-			object_retain ((object *)self->a);\
+			object_retain (self->a);\
 	}\
 } while (0)
 

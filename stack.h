@@ -3,10 +3,10 @@
 
 #include "types.h"
 
-stack *stack_create (void);
+stack_ref stack_create (void);
 
-void stack_push (stack *, object *);
-void stack_pop (stack *);
-object *stack_top (stack *);
+void stack_push (stack_ref, object_ref);
+void stack_pop (stack_ref);
+object_ref stack_top (stack_ref);
 
 #endif

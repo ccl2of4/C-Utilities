@@ -3,10 +3,10 @@
 
 #include "types.h"
 
-queue *queue_create (void);
+queue_ref queue_create (void);
 
-void queue_push (queue *, object *);
-void queue_pop (queue *);
-object *queue_front (queue *);
+void queue_push (queue_ref, object_ref);
+void queue_pop (queue_ref);
+object_ref queue_front (queue_ref);
 
 #endif

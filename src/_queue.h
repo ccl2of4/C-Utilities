@@ -5,10 +5,10 @@
 
 struct queue {
 	struct object base;
-	list *list;
+	list_ref list;
 };
 
-void queue_init (queue *);
-void _object_dealloc_queue (object *);
+void queue_init (queue_ref);
+void _object_dealloc_queue (object_ref);
 
 #endif

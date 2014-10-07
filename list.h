@@ -3,13 +3,13 @@
 
 #include "types.h"
 
-list *list_create (void);
+list_ref list_create (void);
 
-unsigned list_count (list *);
+unsigned list_count (list_ref);
 
-void list_add (list *, object *);
-void list_insert (list *, object *, unsigned);
-void list_remove (list *, unsigned);
-object *list_get (list *, unsigned);
+void list_add (list_ref, object_ref);
+void list_insert (list_ref, object_ref, unsigned);
+void list_remove (list_ref, unsigned);
+object_ref list_get (list_ref, unsigned);
 
 #endif

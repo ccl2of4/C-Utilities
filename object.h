@@ -3,12 +3,12 @@
 
 #include "types.h"
 
-object *object_create (void);
-object *object_retain (object *);
-void object_release (object *);
-void object_dealloc (object *);
+object_ref object_create (void);
+object_ref object_retain (object_ref);
+void object_release (object_ref);
+void object_dealloc (object_ref);
 
-bool object_equals (object *, object *);
-int object_hash (object *);
+bool object_equals (object_ref, object_ref);
+int object_hash (object_ref);
 
 #endif

@@ -5,10 +5,10 @@
 
 struct stack {
 	struct object base;
-	array *array;
+	array_ref array;
 };
 
-void stack_init (stack *);
-void _object_dealloc_stack (object *);
+void stack_init (stack_ref);
+void _object_dealloc_stack (object_ref);
 
 #endif

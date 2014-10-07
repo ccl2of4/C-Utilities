@@ -6,133 +6,133 @@
 
 static void
 test_number (void) {
-	number *num1 = number_create_int (-10);
-	number *num2 = number_create_int (-10);
-	number *num3 = number_create_int (17);
+	number_ref num1 = number_create_int (-10);
+	number_ref num2 = number_create_int (-10);
+	number_ref num3 = number_create_int (17);
 	
 	assert (number_int_value (num1) == -10);
 	assert (number_int_value (num2) == -10);
 	assert (number_int_value (num3) == 17);
-	assert (object_equals ((object *)num1, (object *)num2));
-	assert (!object_equals ((object *)num1, (object *)num3));
-	assert (object_hash ((object *)num1) == object_hash ((object *)num2));
-	assert (object_hash ((object *)num1) != object_hash ((object *)num3));
-	assert (object_hash ((object *)num2) != object_hash ((object *)num3));
+	assert (object_equals (num1, num2));
+	assert (!object_equals (num1, num3));
+	assert (object_hash (num1) == object_hash (num2));
+	assert (object_hash (num1) != object_hash (num3));
+	assert (object_hash (num2) != object_hash (num3));
 
-	object_release ((object *)num1);
-	object_release ((object *)num2);
-	object_release ((object *)num3);
+	object_release (num1);
+	object_release (num2);
+	object_release (num3);
 }
 
 static void
 test_array (void) {
 	int i;
-	array *array = array_create ();
+	array_ref array = array_create ();
 
 	for (i = 0; i < 10; ++i) {
-		number *num = number_create_int (i);
-		array_add (array, (object *)num);
-		object_release ((object *)num);
+		number_ref num = number_create_int (i);
+		array_add (array, num);
+		object_release (num);
 	}
 
 	for (i = 9; i >= 0; --i) {
-		number *num = (number *)array_object_at_index (array, i);
+		number_ref num = array_object_at_index (array, i);
 		assert (number_int_value (num) == i);
 	}
 
 	for (i = 0; array_count (array); ++i) {
-		number *num = (number *)object_retain (array_object_at_index (array, 0));
+		number_ref num = object_retain (array_object_at_index (array, 0));
 		array_remove (array, 0);
 		assert (number_int_value (num) == i);
-		object_release ((object *)num);
+		object_release (num);
 	}
 
-	object_release ((object *)array);
+	object_release (array);
 }
 
 static void
 test_list (void) {
 	int i;
-	list *list = list_create ();
+	list_ref list = list_create ();
 
 	for (i = 0; i < 10; ++i) {
-		number *num = number_create_int (i);
-		list_add (list, (object *)num);
-		object_release ((object *)num);
+		number_ref num = number_create_int (i);
+		list_add (list, num);
+		object_release (num);
 	}
 
 	for (i = 0; i < 10; ++i) {
-		number *num = (number *)list_get (list, i);
+		number_ref num = list_get (list, i);
 		assert (number_int_value (num) == i);
 	}
 	
-	object_release ((object *)list);
+	object_release (list);
 }
 
 static void
 test_stack (void) {
 	int i;
-	stack *stack = stack_create ();
+	stack_ref stack = stack_create ();
 
 	for (i = 0; i < 10; ++i) {
-		number *num = number_create_int (i);
-		stack_push (stack, (object *)num);
-		object_release ((object *)num);
+		number_ref num = number_create_int (i);
+		stack_push (stack, num);
+		object_release (num);
 	}
 
 	for (i = 0; i < 10; ++i) {
-		number *num = (number *)object_retain(stack_top (stack));
+		number_ref num = object_retain(stack_top (stack));
 		stack_pop (stack);
 		assert (number_int_value (num) == 9 - i);
-		object_release ((object *)num);
+		object_release (num);
 	}
 
-	object_release ((object *)stack);
+	object_release (stack);
 }
 
 static void
 test_queue (void) {
 	int i;
-	queue *queue = queue_create ();
+	queue_ref queue = queue_create ();
 
 	for (i = 0; i < 1; ++i) {
-		number *num = number_create_int (i);
-		queue_push (queue, (object *)num);
-		object_release ((object *)num);
+		number_ref num = number_create_int (i);
+		queue_push (queue, num);
+		object_release (num);
 	}
 
 	for (i = 0; i < 1; ++i) {
-		number *num = (number *)object_retain (queue_front (queue));
+		number_ref num = object_retain (queue_front (queue));
 		queue_pop (queue);
 		assert (number_int_value (num) == i);
-		object_release ((object *)num);
+		object_release (num);
 	}
 
-	object_release ((object *)queue);
+	object_release (queue);
 }
 
 static void
 test_hash_map (void) {
 	int i;
-	hash_map *hash_map = hash_map_create ();
+	hash_map_ref hash_map = hash_map_create ();
 
 	for (i = 0; i < 10; ++i) {
-		number *key = number_create_int (i);
-		number *obj = number_create_int (i + 1);
-		hash_map_set (hash_map, (object *)key, (object *)obj);
-		object_release ((object *)key);
-		object_release ((object *)obj);
+		number_ref key = number_create_int (i);
+		number_ref obj = number_create_int (i + 1);
+		hash_map_set (hash_map, key, obj);
+		object_release (key);
+		object_release (obj);
 	}
 
 	for (i = 0; i < 10; ++i) {
-		number *key = number_create_int (i);
-		number *obj = (number *)hash_map_get (hash_map, (object *)key);
+		number_ref key = number_create_int (i);
+		number_ref obj = hash_map_get (hash_map, key);
 		assert (obj);
 		assert (number_int_value (obj) == i + 1);
-		object_release ((object *)key);
+		object_release (key);
 	}
 
-	object_release ((object *)hash_map);
+	object_release (hash_map);
 }
 
 int

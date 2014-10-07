@@ -4,14 +4,13 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-/* opaque types */
-typedef struct object object;
-typedef struct array array;
-typedef struct list list;
-typedef struct queue queue;
-typedef struct stack stack;
-typedef struct hash_map hash_map;
-typedef struct number number;
+typedef void * object_ref;
+typedef void * array_ref;
+typedef void * list_ref;
+typedef void * queue_ref;
+typedef void * stack_ref;
+typedef void * hash_map_ref;
+typedef void * number_ref;
 
 #include "object.h"
 #include "number.h"

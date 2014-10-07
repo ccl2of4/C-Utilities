@@ -3,53 +3,42 @@
 #include "list.h"
 #include "utils.h"
 
-queue *
+queue_ref
 queue_create (void) {
-	queue *queue = Calloc (1, sizeof (struct queue));
-	queue_init (queue);
-	object_retain ((object *)queue);
-	return queue;
+	struct queue *self = Calloc (1, sizeof (struct queue));
+	queue_init (self);
+	object_retain (self);
+	return self;
 }
 
 void
-queue_init (queue *queue) {
-	object_init (&queue->base);
-	((object *)queue)->object_dealloc = _object_dealloc_queue;
-	queue->list = list_create ();
+queue_init (queue_ref _self) {
+	struct queue *self = _self;
+	object_init (self);
+	((struct object *)self)->object_dealloc = _object_dealloc_queue;
+	self->list = list_create ();
 }
 
-void _object_dealloc_queue (object *t) {
-	queue *q = (queue *)t;
-	object_release ((object *)q->list);
-}
-
-/*
-void
-queue_free_with_func (queue *queue, free_func func) {
-	assert (queue && func);
-	list_free_with_func (queue->list, func);
-	Free (queue);
+void _object_dealloc_queue (object_ref _self) {
+	struct queue *self = _self;
+	object_release (self->list);
 }
 
 void
-queue_free (queue *queue) {
-	assert (queue);
-	list_free (queue->list);
-	Free (queue);
-}
-*/
-void
-queue_push (queue *queue, object *obj) {
-	list_add (queue->list, obj);
+queue_push (queue_ref _self, object_ref obj) {
+	struct queue *self = _self;
+	list_add (self->list, obj);
 }
 
 void
-queue_pop (queue *queue) {
-	assert (list_count (queue->list) > 0);
-	list_remove (queue->list, 0);
+queue_pop (queue_ref _self) {
+	struct queue *self = _self;
+	assert (list_count (self->list) > 0);
+	list_remove (self->list, 0);
 }
 
-object *
-queue_front (queue *queue) {
-	return list_get (queue->list, 0);
+object_ref
+queue_front (queue_ref _self) {
+	struct queue *self = _self;
+	return list_get (self->list, 0);
 }

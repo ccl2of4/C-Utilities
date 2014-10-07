@@ -2,133 +2,107 @@
 #include "_array.h"
 #include "utils.h"
 
-array *
+array_ref
 array_create(void)
 {
-	array *arr = Calloc(1,sizeof(struct array));
-	array_init (arr);
-	object_retain ((object *)arr);
-	return arr;
+	struct array *self = Calloc(1,sizeof(struct array));
+	array_init (self);
+	object_retain (self);
+	return self;
 }
 
 void
-array_init (array *arr) {
-	object_init (&arr->base);
-	((object *)arr)->object_dealloc = _object_dealloc_array;
-	array_resize (arr);
+array_init (array_ref _self) {
+	struct array *self = _self;
+	object_init (self);
+	((struct object *)self)->object_dealloc = _object_dealloc_array;
+	array_resize (self);
 }
 
 void
-_object_dealloc_array (object *t) {
-	array* arr = (array *)t;
+_object_dealloc_array (object_ref _self) {
+	struct array *self = _self;
 	int i;
-	for (i = 0; i < array_count (arr); ++i)
-		object_release (array_object_at_index (arr, i));
-	Free (arr->contents);
+	for (i = 0; i < array_count (self); ++i)
+		object_release (array_object_at_index (self, i));
+	Free (self->contents);
 }
 
 void
-array_resize(array *arr)
+array_resize(array_ref _self)
 {
-	assert (arr);
-	if(!arr->contents)
-		arr->contents = Malloc((arr->buffer_size = DEFAULT_SIZE) * sizeof(struct object *));
+	struct array *self = _self;
+	if(!self->contents)
+		self->contents = Malloc((self->buffer_size = DEFAULT_SIZE) * sizeof(object_ref));
 	else
-		arr->contents = Realloc(arr->contents,(arr->buffer_size *= 2) * sizeof(struct object *));
+		self->contents = Realloc(self->contents,(self->buffer_size *= 2) * sizeof(object_ref));
 }
 
 unsigned
-array_count(array *arr)
+array_count(array_ref _self)
 {
-	assert (arr);
-	return arr->count;
+	struct array *self = _self;
+	return self->count;
 }
 
 void
-array_add(array *arr, object *obj)
+array_add(array_ref _self, object_ref obj)
 {
-	return array_insert (arr, obj, arr->count);
+	struct array *self = _self;
+	return array_insert (self, obj, self->count);
 }
 
 void
-array_insert(array *arr, object *obj, unsigned index)
+array_insert(array_ref _self, object_ref obj, unsigned index)
 {
+	struct array *self = _self;
 	int i;
-	object *temp1 = NULL;
-	object *temp2 = NULL;
-	assert (arr && obj && (index <= arr->count));
+	object_ref temp1 = NULL;
+	object_ref temp2 = NULL;
+	assert (obj && (index <= self->count));
 
-	if(arr->count >= arr->buffer_size - 1)
-		array_resize(arr);
+	if(self->count >= self->buffer_size - 1)
+		array_resize(self);
+
 	temp1 = obj;
-	for(i = index; i < arr->count; ++i) {
-		temp2 = arr->contents[i];
-		arr->contents[i] = temp1;
+	for(i = index; i < self->count; ++i) {
+		temp2 = self->contents[i];
+		self->contents[i] = temp1;
 		temp1 = temp2;
 	}
 	object_retain (obj);
-	arr->contents[i] = temp1;
-	arr->count++;
+	self->contents[i] = temp1;
+	self->count++;
 }
 
 void
-array_remove(array *arr, unsigned index)
+array_remove(array_ref _self, unsigned index)
 {
+	struct array *self = _self;
 	int i;
-	object *retval;
-	assert (arr && (index < arr->count));
-	retval = arr->contents[index];
+	object_ref removed_obj;
+	assert((index < self->count));
+	removed_obj = self->contents[index];
 
-	arr->contents[index] = NULL;
-	for(i = index; i < (arr->count - 1); ++i) {
-		arr->contents[index] = arr->contents[index + 1];
+	self->contents[index] = NULL;
+	for(i = index; i < (self->count - 1); ++i) {
+		self->contents[index] = self->contents[index + 1];
 		++index;		
 	}
-	arr->count--;
-	object_release (retval);
+	self->count--;
+	object_release (removed_obj);
 }
 
 int
-array_index_of_object(array *arr, object *obj)
+array_index_of_object(array_ref _self, object_ref obj)
 {
-	int result = 0;
-	assert (arr && obj);
-	while(result < arr->count) {
-		if(obj == arr->contents[result]) return result;
-		++result;
-	}
-	return -1;
+	assert (0);
 }
 
-object *
-array_object_at_index(array *arr, unsigned index)
+object_ref
+array_object_at_index(array_ref _self, unsigned index)
 {
-	assert (arr && (index < arr->count));
-	return arr->contents[index];
+	struct array *self = _self;
+	assert ((index < self->count));
+	return self->contents[index];
 }
-
-/*
-void
-array_sort(array *arr, int (*compar)(const void*, const void*))
-{
-	assert (arr && compar);
-	qsort(arr->contents, arr->count, sizeof(void *), compar);
-}
-
-int
-array_insert_ordered(array *arr, void *obj, int (*compar)(const void*, const void*))
-{
-	int index = 0;
-	assert (arr && obj && compar);
-	while(index < arr->count && compar(&obj,&arr->contents[index]) >= 0) ++index;
-	array_insert(arr,obj,index);
-	return index;
-}
-
-void *
-array_search (array *arr, const void *key, int (*compar)(const void *, const void *))
-{
-	assert (arr && key && compar);
-	return *(void **)bsearch (key, arr->contents, arr->count, sizeof(void *), compar);
-}
-*/

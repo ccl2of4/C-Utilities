@@ -27,8 +27,8 @@ struct number {
 	number_type number_type;
 };
 
-void number_init (number *);
-bool _object_equals_number (object *, object *);
-int _object_hash_number (object *);
+void number_init (number_ref);
+bool _object_equals_number (object_ref, object_ref);
+int _object_hash_number (object_ref);
 
 #endif
