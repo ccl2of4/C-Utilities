@@ -1,5 +1,5 @@
 all:
-	gcc *.c -o tests
+	gcc -I . -I src/ *.c src/*.c -o tests
 clean:
 	rm tests
 

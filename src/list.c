@@ -1,22 +1,34 @@
 #include "list.h"
+#include "_list.h"
 #include "utils.h"
-
-struct list_node {
-	struct list_node *next;
-	const void *obj;
-};
-
-struct list {
-	unsigned count;
-	struct list_node *head;
-};
 
 list *
 list_create (void) {
 	list *list = Calloc (1,sizeof (struct list));
+	list_init (list);
+	type_retain ((type *)list);
 	return list;
 }
 
+void
+list_init (list *list) {
+	type_init (&list->base);
+	((type *)list)->type_dealloc = _type_dealloc_list;
+}
+
+void
+_type_dealloc_list (type *t) {
+	list *list = (struct list *)t;
+	struct list_node *node = list->head;
+	while (node) {
+		struct list_node *next_node = node->next;
+		type_release ((type *)node);
+		node = next_node;
+	}
+}
+
+
+/*
 void
 list_free_with_func (list *list, free_func func) {
 	assert (list && func);
@@ -40,7 +52,7 @@ list_free (list *list) {
 	}
 	Free (list);
 }
-
+*/
 unsigned
 list_count (list *list) {
 	assert (list);
@@ -48,14 +60,14 @@ list_count (list *list) {
 }
 
 void
-list_add (list *list, const void *obj) {
+list_add (list *list, type *obj) {
 	assert (list && obj);
 	return list_insert (list, obj, list->count);
 }
 
 void
-list_insert (list *list, const void *obj, unsigned idx) {
-	struct list_node *new_node = Malloc (sizeof (struct list_node));
+list_insert (list *list, type *obj, unsigned idx) {
+	struct list_node *new_node = list_node_create ();
 	struct list_node *left_node = NULL;
 	struct list_node *right_node = list->head;
 	assert (list && obj && (idx <= list->count));
@@ -65,8 +77,7 @@ list_insert (list *list, const void *obj, unsigned idx) {
 		right_node = right_node ? right_node->next : NULL;
 	}
 
-
-	new_node->obj = obj;
+	list_node_set_obj(new_node, obj);
 
 	if (left_node)
 		left_node->next = new_node;
@@ -77,10 +88,9 @@ list_insert (list *list, const void *obj, unsigned idx) {
 	++list->count;
 }
 
-void *
+void
 list_remove (list *list, unsigned idx) {
 	assert (list && (idx < list->count));
-	const void *retval;
 	struct list_node *left_node = NULL;
 	struct list_node *node = list->head;
 	struct list_node *right_node;
@@ -91,22 +101,21 @@ list_remove (list *list, unsigned idx) {
 	}
 
 	right_node = node->next;
-	retval = node->obj;
 	left_node->next = right_node;
 	--list->count;
-	return (void *)retval;
+	if (node) type_release ((type *)node);
 }
 
-void *
+type *
 list_get (list *list, unsigned idx) {
 	struct list_node *node = list->head;
 	assert (list && (idx < list->count));
 	while (idx--) {
 		node = node->next;
 	}
-	return (void *)node->obj;
+	return list_node_get_obj (node);
 }
-
+/*
 void
 list_foreach (list *list, foreach_func func) {
 	struct list_node *node = list->head;
@@ -117,4 +126,41 @@ list_foreach (list *list, foreach_func func) {
 		func ((void *)node->obj, idx++, &stop);
 		node = node->next;
 	}
+}
+*/
+
+list_node *
+list_node_create (void) {
+	list_node *node = Calloc (1,sizeof (struct list_node));
+	list_node_init (node);
+	type_retain ((type *)node);
+	return node;
+}
+
+void
+list_node_init (list_node *node) {
+	type_init (&node->base);
+	((type *)node)->type_dealloc = _type_dealloc_list_node;
+}
+
+type *
+list_node_get_obj (list_node *node) {
+	return node->obj;
+}
+
+void
+list_node_set_obj (list_node *node, type *obj) {
+	if (node->obj != obj) {
+		if (node->obj)
+			type_release (node->obj);
+		node->obj = obj;
+		if (node->obj)
+			type_retain (node->obj);
+	}
+}
+
+void
+_type_dealloc_list_node (type *t) {
+	list_node* list_node = (struct list_node *)t;
+	list_node_set_obj (list_node, NULL);
 }

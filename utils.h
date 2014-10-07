@@ -3,9 +3,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <stddef.h>
-#include <stdbool.h>
 #include <assert.h>
+#include <stddef.h>
 
 #define MAX(A,B) (((B) < (A)) ? (A) : (B))
 #define MIN(A,B) (((A) < (B)) ? (A) : (B))

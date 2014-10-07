@@ -1,18 +1,29 @@
 #include "queue.h"
+#include "_queue.h"
 #include "list.h"
 #include "utils.h"
 
-struct queue {
-	list *list;
-};
-
 queue *
 queue_create (void) {
-	queue *queue = Malloc (sizeof (struct queue));
-	queue->list = list_create ();
+	queue *queue = Calloc (1, sizeof (struct queue));
+	queue_init (queue);
+	type_retain ((type *)queue);
 	return queue;
 }
 
+void
+queue_init (queue *queue) {
+	type_init (&queue->base);
+	((type *)queue)->type_dealloc = _type_dealloc_queue;
+	queue->list = list_create ();
+}
+
+void _type_dealloc_queue (type *t) {
+	queue *q = (queue *)t;
+	type_release ((type *)q->list);
+}
+
+/*
 void
 queue_free_with_func (queue *queue, free_func func) {
 	assert (queue && func);
@@ -26,19 +37,19 @@ queue_free (queue *queue) {
 	list_free (queue->list);
 	Free (queue);
 }
-
+*/
 void
-queue_push (queue *queue, const void *obj) {
+queue_push (queue *queue, type *obj) {
 	list_add (queue->list, obj);
 }
 
-void *
+void
 queue_pop (queue *queue) {
 	assert (list_count (queue->list) > 0);
-	return list_remove (queue->list, 0);
+	list_remove (queue->list, 0);
 }
 
-void *
+type *
 queue_front (queue *queue) {
 	return list_get (queue->list, 0);
 }
