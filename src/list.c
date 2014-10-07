@@ -19,40 +19,26 @@ list_init (list *list) {
 void
 _type_dealloc_list (type *t) {
 	list *list = (struct list *)t;
-	struct list_node *node = list->head;
-	while (node) {
-		struct list_node *next_node = node->next;
-		type_release ((type *)node);
-		node = next_node;
-	}
+	list_set_head (list, NULL);
 }
 
-
-/*
-void
-list_free_with_func (list *list, free_func func) {
-	assert (list && func);
-	struct list_node *node = list->head;
-	while (node) {
-		func ((void *)node->obj);
-		node = node->next;
-	}
-	list_free (list);
+list_node *
+list_get_head (list *this) {
+	return this->head;
 }
 
 void
-list_free (list *list) {
-	assert (list);
-	struct list_node *node = list->head;
-	unsigned idx = 0;
-	while (node) {
-		struct list_node *next_node = node->next;
-		Free (node);
-		node = next_node;
+list_set_head (list *this, list_node *head) {
+	if (this->head != head) {
+		if (this->head) {
+			type_release ((type *)this->head);
+		}
+		this->head = head;
+		if (this->head)
+			type_retain ((type *)this->head);
 	}
-	Free (list);
 }
-*/
+
 unsigned
 list_count (list *list) {
 	assert (list);
@@ -69,65 +55,53 @@ void
 list_insert (list *list, type *obj, unsigned idx) {
 	struct list_node *new_node = list_node_create ();
 	struct list_node *left_node = NULL;
-	struct list_node *right_node = list->head;
+	struct list_node *right_node = list_get_head (list);
 	assert (list && obj && (idx <= list->count));
 
 	while (idx--) {
 		left_node = right_node;
-		right_node = right_node ? right_node->next : NULL;
+		right_node = right_node ? list_node_get_next (right_node) : NULL;
 	}
 
 	list_node_set_obj(new_node, obj);
 
 	if (left_node)
-		left_node->next = new_node;
+		list_node_set_next (left_node, new_node);
 	else
-		list->head = new_node;
-	new_node->next = right_node;
+		list_set_head (list, new_node);
 
+	list_node_set_next (new_node, right_node);
+
+	type_release ((type *)new_node);
 	++list->count;
 }
 
 void
 list_remove (list *list, unsigned idx) {
 	assert (list && (idx < list->count));
-	struct list_node *left_node = NULL;
-	struct list_node *node = list->head;
+	struct list_node *node = list_get_head (list);
+	struct list_node *left_node = node;
 	struct list_node *right_node;
 
 	while (idx--) {
+		node = list_node_get_next (node);
 		left_node = node;
-		node = node->next;
 	}
 
-	right_node = node->next;
-	left_node->next = right_node;
+	right_node = list_node_get_next(node);
+	list_node_set_next(left_node, right_node);
 	--list->count;
-	if (node) type_release ((type *)node);
 }
 
 type *
 list_get (list *list, unsigned idx) {
-	struct list_node *node = list->head;
+	struct list_node *node = list_get_head (list);
 	assert (list && (idx < list->count));
 	while (idx--) {
 		node = node->next;
 	}
 	return list_node_get_obj (node);
 }
-/*
-void
-list_foreach (list *list, foreach_func func) {
-	struct list_node *node = list->head;
-	unsigned idx = 0;
-	bool stop = false;
-	assert (list && func);
-	while (node && !stop) {
-		func ((void *)node->obj, idx++, &stop);
-		node = node->next;
-	}
-}
-*/
 
 list_node *
 list_node_create (void) {
@@ -159,8 +133,25 @@ list_node_set_obj (list_node *node, type *obj) {
 	}
 }
 
+list_node *
+list_node_get_next (list_node *this) {
+	return this->next;
+}
+
+void
+list_node_set_next (list_node *this, list_node *next) {
+	if (this->next != next) {
+		if (this->next)
+			type_release ((type *)this->next);
+		this->next = next;
+		if (this->next)
+			type_retain ((type *)this->next);
+	}
+}
+
 void
 _type_dealloc_list_node (type *t) {
 	list_node* list_node = (struct list_node *)t;
 	list_node_set_obj (list_node, NULL);
+	list_node_set_next (list_node, NULL);
 }

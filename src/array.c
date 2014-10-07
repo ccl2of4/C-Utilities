@@ -76,7 +76,7 @@ array_remove(array *arr, unsigned index)
 {
 	int i;
 	type *retval;
-	assert (arr && (index > arr->count));
+	assert (arr && (index < arr->count));
 	retval = arr->contents[index];
 
 	arr->contents[index] = NULL;

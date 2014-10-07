@@ -16,9 +16,13 @@ struct list {
 };
 
 void list_init (list *);
+list_node *list_get_head (list *);
+void list_set_head (list *, list_node *);
 void _type_dealloc_list (type *);
 
 list_node *list_node_create (void);
+list_node *list_node_get_next (list_node *);
+void list_node_set_next (list_node *, list_node *);
 type *list_node_get_obj (list_node *);
 void list_node_set_obj (list_node *, type *);
 void list_node_init (list_node *);

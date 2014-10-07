@@ -12,6 +12,4 @@ void list_insert (list *, type *, unsigned);
 void list_remove (list *, unsigned);
 type *list_get (list *, unsigned);
 
-//void list_foreach (list *, foreach_func);
-
 #endif
