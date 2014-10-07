@@ -6,9 +6,22 @@
 
 static void
 test_number (void) {
-	number *num = number_create_int (-10);
-	assert (number_int_value (num) == -10);
-	type_release ((type *)num);
+	number *num1 = number_create_int (-10);
+	number *num2 = number_create_int (-10);
+	number *num3 = number_create_int (17);
+	
+	assert (number_int_value (num1) == -10);
+	assert (number_int_value (num2) == -10);
+	assert (number_int_value (num3) == 17);
+	assert (type_equals ((type *)num1, (type *)num2));
+	assert (!type_equals ((type *)num1, (type *)num3));
+	assert (type_hash ((type *)num1) == type_hash ((type *)num2));
+	assert (type_hash ((type *)num1) != type_hash ((type *)num3));
+	assert (type_hash ((type *)num2) != type_hash ((type *)num3));
+
+	type_release ((type *)num1);
+	type_release ((type *)num2);
+	type_release ((type *)num3);
 }
 
 static void
@@ -98,6 +111,30 @@ test_queue (void) {
 	type_release ((type *)queue);
 }
 
+static void
+test_hash_map (void) {
+	int i;
+	hash_map *hash_map = hash_map_create ();
+
+	for (i = 0; i < 10; ++i) {
+		number *key = number_create_int (i);
+		number *object = number_create_int (i + 1);
+		hash_map_set (hash_map, (type *)key, (type *)object);
+		type_release ((type *)key);
+		type_release ((type *)object);
+	}
+
+	for (i = 0; i < 10; ++i) {
+		number *key = number_create_int (i);
+		number *object = (number *)hash_map_get (hash_map, (type *)key);
+		assert (object);
+		assert (number_int_value (object) == i + 1);
+		type_release ((type *)key);
+	}
+
+	type_release ((type *)hash_map);
+}
+
 int
 main (int argc, char **argv) {
 	test_number ();
@@ -105,4 +142,5 @@ main (int argc, char **argv) {
 	test_list ();
 	test_stack ();
 	test_queue ();
+	test_hash_map ();
 }

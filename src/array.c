@@ -32,9 +32,9 @@ array_resize(array *arr)
 {
 	assert (arr);
 	if(!arr->contents)
-		arr->contents = Malloc((arr->buffer_size = DEFAULT_SIZE) * sizeof(type *));
+		arr->contents = Malloc((arr->buffer_size = DEFAULT_SIZE) * sizeof(struct type *));
 	else
-		arr->contents = Realloc(arr->contents,(arr->buffer_size *= 2) * sizeof(type *));
+		arr->contents = Realloc(arr->contents,(arr->buffer_size *= 2) * sizeof(struct type *));
 }
 
 unsigned

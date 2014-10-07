@@ -10,34 +10,80 @@ number *number_create (void) {
 }
 
 void number_init (number *number) {
-	type_init (&number->base);
+	type_init ((type *)number);
+	((type *)number)->type_equals = _type_equals_number;
+	((type *)number)->type_hash = _type_hash_number;
 }
 
-/*
-number *number_free (number *number) {
-	Free (number);	
+bool
+_type_equals_number (type *_self, type *_other) {
+	number *self = (number *)_self;
+	number *other = (number *)_other;
+	if (self->number_type != other->number_type) return false;
+	switch (self->number_type) {
+		case number_type_char:
+			return self->char_val == other->char_val;
+		case number_type_short:
+			return self->short_val == other->short_val;
+		case number_type_int:
+			return self->int_val == other->int_val;
+		case number_type_long:
+			return self->long_val == other->long_val;
+		case number_type_long_long:
+			return self->long_long_val == other->long_long_val;
+		case number_type_float:
+			return self->float_val == other->float_val;
+		case number_type_double:
+			return self->double_val == other->double_val;
+	}
 }
-*/
+
+int
+_type_hash_number (type *_self) {
+	number *self = (number *)_self;
+	switch (self->number_type) {
+		case number_type_char:
+			return self->char_val;
+		case number_type_short:
+			return self->short_val;
+		case number_type_int:
+			return self->int_val;
+		case number_type_long:
+			return self->long_val;
+		case number_type_long_long:
+			return self->long_long_val;
+		case number_type_float:
+			return self->float_val;
+		case number_type_double:
+			return self->double_val;
+	}
+}
+
 
 number *number_create_char (char val) {
 	number *number = number_create ();
 	number->char_val = val;
+	number->number_type = number_type_char;
 }
 number *number_create_short (short val) {
 	number *number = number_create ();
 	number->char_val = val;
+	number->number_type = number_type_char;
 }
 number *number_create_int (int val) {
 	number *number = number_create ();
 	number->int_val = val;
+	number->number_type = number_type_int;
 }
 number *number_create_long (long val) {
 	number *number = number_create ();
 	number->long_val = val;
+	number->number_type = number_type_long;
 }
 number *number_create_long_long (long long val) {
 	number *number = number_create ();
 	number->long_long_val = val;
+	number->number_type = number_type_long_long;
 }
 number *number_create_unsigned_char (unsigned char val) {
 	return number_create_char ((char)val);
@@ -57,10 +103,12 @@ number *number_create_unsigned_long_long (unsigned long long val) {
 number *number_create_float (float val) {
 	number *number = number_create ();
 	number->float_val = val;
+	number->number_type = number_type_float;
 }
 number *number_create_double (double val) {
 	number *number = number_create ();
 	number->double_val = val;
+	number->number_type = number_type_double;
 }
 
 

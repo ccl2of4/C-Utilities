@@ -124,13 +124,7 @@ list_node_get_obj (list_node *node) {
 
 void
 list_node_set_obj (list_node *node, type *obj) {
-	if (node->obj != obj) {
-		if (node->obj)
-			type_release (node->obj);
-		node->obj = obj;
-		if (node->obj)
-			type_retain (node->obj);
-	}
+	RETAINED_MEMBER_SWAP (node,obj,obj);
 }
 
 list_node *
@@ -139,14 +133,8 @@ list_node_get_next (list_node *this) {
 }
 
 void
-list_node_set_next (list_node *this, list_node *next) {
-	if (this->next != next) {
-		if (this->next)
-			type_release ((type *)this->next);
-		this->next = next;
-		if (this->next)
-			type_retain ((type *)this->next);
-	}
+list_node_set_next (list_node *self, list_node *next) {
+	RETAINED_MEMBER_SWAP (self,next,next);
 }
 
 void

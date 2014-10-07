@@ -14,4 +14,14 @@ void *Calloc (size_t num, size_t size);
 void *Realloc (void *, size_t);
 void Free (void *);
 
+#define RETAINED_MEMBER_SWAP(self, a, b) do {\
+	if (self->a != b) {\
+		if (self->a)\
+			type_release ((type *)self->a);\
+		self->a = b;\
+		if (self->a)\
+			type_retain ((type *)self->a);\
+	}\
+} while (0)
+
 #endif
