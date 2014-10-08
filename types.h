@@ -12,6 +12,7 @@ typedef void * stack_ref;
 typedef void * hash_map_ref;
 typedef void * number_ref;
 typedef void * iterator_ref;
+typedef void * string_ref;
 
 #include "object.h"
 #include "number.h"
@@ -21,5 +22,6 @@ typedef void * iterator_ref;
 #include "list.h"
 #include "hash_map.h"
 #include "iterator.h"
+#include "string_.h"
 
 #endif
