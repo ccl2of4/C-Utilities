@@ -20,9 +20,11 @@ typedef struct hash_map_node {
 
 // hash_map
 void hash_map_init (hash_map_ref);
+void hash_map_do_set (hash_map_ref, object_ref, object_ref);
+void hash_map_do_remove (hash_map_ref, object_ref);
 void hash_map_check_for_rehash (hash_map_ref);
-void hash_map_expand_array (hash_map_ref, unsigned);
-void hash_map_rehash (hash_map_ref);
+void hash_map_resize_array (hash_map_ref, unsigned);
+void hash_map_rehash (hash_map_ref, unsigned new_size);
 void _object_dealloc_hash_map (object_ref);
 
 // hash_map_node
@@ -36,6 +38,7 @@ void _object_dealloc_hash_map_node (object_ref);
 
 #define DEFAULT_ARRAY_LENGTH 10
 #define ARRAY_RESIZE_FACTOR 2
-#define REHASH_FACTOR .75
+#define REHASH_UP_FACTOR .75
+#define REHASH_DOWN_FACTOR .1
 
 #endif

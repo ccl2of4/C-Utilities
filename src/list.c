@@ -79,16 +79,19 @@ list_remove (list_ref _self, unsigned idx) {
 	struct list *self = _self;
 	assert ((idx < self->count));
 	list_node_ref node = list_get_head (self);
-	list_node_ref left_node = node;
-	list_node_ref right_node;
+	list_node_ref left_node = NULL;
+	list_node_ref right_node = NULL;
 
 	while (idx--) {
-		node = list_node_get_next (node);
 		left_node = node;
+		node = list_node_get_next (node);
 	}
 
 	right_node = list_node_get_next(node);
-	list_node_set_next(left_node, right_node);
+	if (left_node)
+		list_node_set_next(left_node, right_node);
+	else
+		list_set_head (self, right_node);
 	--self->count;
 }
 

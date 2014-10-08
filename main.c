@@ -136,6 +136,16 @@ test_hash_map (void) {
 		object_release (key);
 	}
 
+	for (i = 9; i >= 0; --i) {
+		number_ref key = number_create_int (i);
+		hash_map_remove (hash_map, key);
+		number_ref obj = hash_map_get (hash_map, key);
+		assert (!obj);
+		object_release (key);
+	}
+
+	assert (!hash_map_count (hash_map));
+
 	object_release (hash_map);
 }
 

@@ -30,7 +30,7 @@ hash_map_init (hash_map_ref _self) {
 	struct hash_map *self = _self;
 	object_init (self);
 	((struct object *)self)->object_dealloc = _object_dealloc_hash_map;
-	hash_map_expand_array (self, DEFAULT_ARRAY_LENGTH);
+	hash_map_resize_array (self, DEFAULT_ARRAY_LENGTH);
 }
 
 void
@@ -44,16 +44,15 @@ _object_dealloc_hash_map (object_ref _self) {
 	Free (self->array);
 }
 
-void hash_map_expand_array (hash_map_ref _self, unsigned length) {
+void hash_map_resize_array (hash_map_ref _self, unsigned new_length) {
 	struct hash_map *self = _self;
-	assert (length > self->array_length);
 	if (!self->array) {
-		self->array = Calloc (length, sizeof (list_ref));
+		self->array = Calloc (new_length, sizeof (list_ref));
 	} else {
-		self->array = Realloc (self->array, length * sizeof (list_ref));
-		memset (self->array + self->array_length, 0, (length - self->array_length) * sizeof (list_ref));
+		self->array = Realloc (self->array, new_length * sizeof (list_ref));
+		memset (self->array, 0, new_length * sizeof (list_ref));
 	}
-	self->array_length = length;
+	self->array_length = new_length;
 }
 
 object_ref
@@ -76,22 +75,59 @@ hash_map_get (hash_map_ref _self, object_ref key) {
 }
 
 void
-hash_map_set (hash_map_ref _self, object_ref key, object_ref value) {
+hash_map_set (hash_map_ref _self, object_ref key, object_ref obj) {
+	struct hash_map *self = _self;
+	hash_map_do_set (self, key, obj);
+	hash_map_check_for_rehash (self);
+}
+
+void
+hash_map_do_set (hash_map_ref _self, object_ref key, object_ref obj) {
 	struct hash_map *self = _self;
 	hash_map_node *node = hash_map_node_create ();
 	int index = object_hash (key) % self->array_length;
-	list_ref *list = &self->array[index];
+	list_ref *list = self->array + index;
 	if (!*list) {
 		*list = list_create ();
 	}
 
 	hash_map_node_set_key (node, key);
-	hash_map_node_set_obj (node, value);
+	hash_map_node_set_obj (node, obj);
 
 	list_add (*list, (struct object *)node);
 	object_release ((struct object *)node);
 	++self->count;
+}
+
+void
+hash_map_remove (hash_map_ref _self, object_ref key) {
+	struct hash_map *self = _self;
+	hash_map_do_remove (self, key);
 	hash_map_check_for_rehash (self);
+}
+
+void
+hash_map_do_remove (hash_map_ref _self, object_ref key) {
+	struct hash_map *self = _self;
+	int index = object_hash (key) % self->array_length;
+	list_ref *list = self->array + index;
+	if (*list) {
+		iterator_ref iterator = list_create_iterator (*list);
+		int idx = -1;
+		bool found = false;
+		while (!found && iterator_has_next (iterator)) {
+			hash_map_node_ref node = iterator_next (iterator);
+			found = object_equals (key, hash_map_node_get_key (node));
+			++idx;
+		}
+		if (found) {
+			int old_count = list_count (*list);
+			list_remove (*list, idx);
+			assert (list_count (*list) == old_count - 1);
+			--self->count;
+		}
+		object_release (iterator);
+	}
 }
 
 unsigned
@@ -103,17 +139,21 @@ hash_map_count (hash_map_ref _self) {
 void
 hash_map_check_for_rehash (hash_map_ref _self) {
 	struct hash_map *self = _self;
+
 	float percent_load;
 	percent_load = ((float)self->count)/((float)self->array_length);
-	if (percent_load > REHASH_FACTOR) {
-		unsigned old_length = self->array_length;
-		hash_map_expand_array (self,self->array_length * ARRAY_RESIZE_FACTOR);
-		hash_map_rehash (self);
+
+	if (percent_load > REHASH_UP_FACTOR) {
+		hash_map_rehash (self, self->array_length * ARRAY_RESIZE_FACTOR);
+	}
+
+	else if (percent_load < REHASH_DOWN_FACTOR && self->array_length > DEFAULT_ARRAY_LENGTH) {
+		hash_map_rehash (self, self->array_length * REHASH_DOWN_FACTOR * ARRAY_RESIZE_FACTOR);
 	}
 }
 
 void
-hash_map_rehash (hash_map_ref _self) {
+hash_map_rehash (hash_map_ref _self, unsigned new_size) {
 	struct hash_map *self = _self;
 	int i;
 	array_ref array = array_create ();
@@ -122,19 +162,24 @@ hash_map_rehash (hash_map_ref _self) {
 		list_ref *list = self->array + i;
 		if (*list) {
 			iterator_ref iterator = list_create_iterator (*list);
-			while (iterator_has_next (iterator))
+			while (iterator_has_next (iterator)) {
 				array_add (array, iterator_next (iterator));
+			}
 
 			object_release (iterator);
 			object_release (*list);
 			*list = NULL;
 		}
 	}
+	assert (array_count (array) == self->count);
 	self->count = 0;
+
+	hash_map_resize_array (self, new_size);
+
 	iterator = array_create_iterator (array);
 	while (iterator_has_next (iterator)) {
 		hash_map_node_ref node = iterator_next (iterator);
-		hash_map_set (self, hash_map_node_get_key (node), hash_map_node_get_obj (node));
+		hash_map_do_set (self, hash_map_node_get_key (node), hash_map_node_get_obj (node));
 	}
 	object_release (iterator);
 	object_release (array);
