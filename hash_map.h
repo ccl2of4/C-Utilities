@@ -10,4 +10,7 @@ void hash_map_set (hash_map_ref, object_ref, object_ref);
 void hash_map_remove (hash_map_ref, object_ref);
 unsigned hash_map_count (hash_map_ref);
 
+array_ref hash_map_create_keys_array (hash_map_ref);
+array_ref hash_map_create_objects_array (hash_map_ref);
+
 #endif

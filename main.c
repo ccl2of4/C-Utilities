@@ -119,6 +119,8 @@ static void
 test_hash_map (void) {
 	int i;
 	hash_map_ref hash_map = hash_map_create ();
+	array_ref keys_array;
+	array_ref objects_array;
 
 	for (i = 0; i < 10; ++i) {
 		number_ref key = number_create_int (i);
@@ -135,6 +137,24 @@ test_hash_map (void) {
 		assert (number_int_value (obj) == i + 1);
 		object_release (key);
 	}
+
+	keys_array = hash_map_create_keys_array (hash_map);
+	assert (array_count (keys_array) == 10);
+	for (i = 0; i < 10; ++i) {
+		number_ref key = array_object_at_index (keys_array, i);
+		int val = number_int_value (key);
+		assert (val >= 0 && val < 10 );
+	}
+	object_release (keys_array);
+
+	objects_array = hash_map_create_objects_array (hash_map);
+	assert (array_count (objects_array) == 10);
+	for (i = 0; i < 10; ++i) {
+		number_ref obj = array_object_at_index (objects_array, i);
+		int val = number_int_value (obj);
+		assert (val > 0 && val <= 10 );
+	}
+	object_release (objects_array);
 
 	for (i = 9; i >= 0; --i) {
 		number_ref key = number_create_int (i);

@@ -136,6 +136,42 @@ hash_map_count (hash_map_ref _self) {
 	return self->count;
 }
 
+array_ref
+hash_map_create_keys_array (hash_map_ref _self) {
+	struct hash_map *self = _self;
+	return hash_map_create_array (self, false);
+}
+
+array_ref
+hash_map_create_objects_array (hash_map_ref _self) {
+	struct hash_map *self = _self;
+	return hash_map_create_array (self, true);
+}
+
+array_ref
+hash_map_create_array (hash_map_ref _self, bool objects) {
+	struct hash_map *self = _self;
+	iterator_ref iterator = hash_map_create_iterator (self);
+	array_ref keys_array = array_create ();
+	while (iterator_has_next (iterator)) {
+		hash_map_node_ref node = iterator_next (iterator);
+		assert (node);
+		if (objects) {
+			object_ref obj = hash_map_node_get_obj (node);
+			assert (obj);
+			array_add (keys_array, obj);
+
+		}
+		else {
+			object_ref key = hash_map_node_get_key (node);
+			assert (key);
+			array_add (keys_array, key);
+		}
+	}
+	object_release (iterator);
+	return keys_array;
+}
+
 void
 hash_map_check_for_rehash (hash_map_ref _self) {
 	struct hash_map *self = _self;
@@ -185,6 +221,14 @@ hash_map_rehash (hash_map_ref _self, unsigned new_size) {
 	object_release (array);
 }
 
+iterator_ref
+hash_map_create_iterator (hash_map_ref _self) {
+	struct hash_map *self = _self;
+	return hash_map_iterator_create (self);
+}
+
+/* hash_map_node */
+
 hash_map_node_ref
 hash_map_node_create (void) {
 	hash_map_node *self = Calloc (1, sizeof (struct hash_map_node));
@@ -223,4 +267,65 @@ _object_dealloc_hash_map_node (object_ref _self) {
 	struct hash_map_node *self = _self;
 	hash_map_node_set_key (self,NULL);
 	hash_map_node_set_obj (self,NULL);
+}
+
+/* hash_map_iterator */
+hash_map_iterator_ref
+hash_map_iterator_create (hash_map_ref hash_map) {
+	struct hash_map_iterator *self = Calloc (1, sizeof (struct hash_map_iterator));
+	hash_map_iterator_init (self);
+	object_retain (self);
+	self->hash_map = hash_map;
+	hash_map_iterator_find_next (self);
+	return self;
+}
+
+void
+hash_map_iterator_init (hash_map_iterator_ref _self) {
+	struct hash_map_iterator *self = _self;
+	iterator_init (self);
+	((struct iterator *)self)->iterator_has_next = _iterator_has_next__hash_map_iterator;
+	((struct iterator *)self)->iterator_next = _iterator_next__hash_map_iterator;
+}
+
+void
+hash_map_iterator_find_next (hash_map_iterator_ref _self) {
+	struct hash_map_iterator *self = _self;
+	struct hash_map *hash_map = self->hash_map;
+	while (!self->current_list_iterator && self->current_idx < hash_map_count (self->hash_map)) {
+		list_ref list = hash_map->array[self->current_idx];
+		if (list) {
+			self->current_list_iterator = list_create_iterator (list);
+			if (!iterator_has_next (self->current_list_iterator)) {
+				object_release (self->current_list_iterator);
+				self->current_list_iterator = NULL;
+				list = NULL;
+			}
+		}
+		++self->current_idx;
+	}
+}
+
+
+object_ref
+_iterator_next__hash_map_iterator (hash_map_iterator_ref _self) {
+	struct hash_map_iterator *self = _self;
+	hash_map_node_ref retval;
+	
+	assert (self->current_list_iterator && iterator_has_next (self->current_list_iterator));
+	retval = iterator_next (self->current_list_iterator);
+	assert (retval);
+
+	if (!iterator_has_next (self->current_list_iterator)) {
+		object_release (self->current_list_iterator);
+		self->current_list_iterator = NULL;
+		hash_map_iterator_find_next (self);
+	}
+
+	return retval;
+}
+bool
+_iterator_has_next__hash_map_iterator (hash_map_iterator_ref _self) {
+	struct hash_map_iterator *self = _self;
+	return !!self->current_list_iterator;
 }
