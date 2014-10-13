@@ -169,6 +169,39 @@ test_hash_map (void) {
 	object_release (hash_map);
 }
 
+static void
+test_string (void) {
+	string_ref str1 = string_create_with_c_str ("hello");
+	string_ref str2 = string_create_with_c_str ("hello");
+	string_ref str3 = string_create_with_c_str ("hello again");
+	string_ref str4 = string_create_with_c_str ("goodbye");
+	string_ref str5 = string_create_with_c_str ("goodbye goodbye");
+	hash_map_ref hash_map = hash_map_create ();
+
+	assert (object_equals (str1, str2));
+	assert (!object_equals (str1, str3));
+	assert (!object_equals (str3, str4));
+
+	hash_map_set (hash_map, str1, str2);
+	hash_map_set (hash_map, str2, str1);
+	hash_map_set (hash_map, str3, str3);
+	hash_map_set (hash_map, str4, str5);
+	hash_map_set (hash_map, str5, str4);
+
+	assert (object_equals (hash_map_get (hash_map, str1), str2));
+	assert (object_equals (hash_map_get (hash_map, str2), str1));
+	assert (object_equals (hash_map_get (hash_map, str3), str3));
+	assert (object_equals (hash_map_get (hash_map, str4), str5));
+	assert (object_equals (hash_map_get (hash_map, str5), str4));
+
+	object_release (str1);
+	object_release (str2);
+	object_release (str3);
+	object_release (str4);
+	object_release (str5);
+	object_release (hash_map);
+}
+
 int
 main (int argc, char **argv) {
 	test_number ();
@@ -177,4 +210,5 @@ main (int argc, char **argv) {
 	test_stack ();
 	test_queue ();
 	test_hash_map ();
+	test_string ();
 }

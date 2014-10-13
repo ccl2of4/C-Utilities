@@ -4,9 +4,8 @@
 #include "types.h"
 
 string_ref string_create (void);
+string_ref string_create_with_c_str (char *);
 
 char *string_c_str (string_ref);
-void string_append (string_ref, string_ref);
-void string_append_c_str (string_ref, char *);
 
 #endif

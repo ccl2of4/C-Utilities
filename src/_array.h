@@ -8,6 +8,7 @@ typedef void * array_iterator_ref;
 
 struct array {
 	struct object base;
+	enum class_magic_number magic_num;
 	object_ref *contents;
 	unsigned buffer_size;
 	unsigned count;
@@ -15,6 +16,7 @@ struct array {
 
 struct array_iterator {
 	struct iterator base;
+	enum class_magic_number magic_num;
 	array_ref array;
 	unsigned current_idx;
 };

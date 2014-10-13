@@ -15,6 +15,7 @@ void
 stack_init (stack_ref _self) {
 	struct stack *self = _self;
 	object_init (self);
+	self->magic_num = class_magic_number_stack;
 	((struct object *)self)->object_dealloc = _object_dealloc_stack;
 	self->array = array_create ();
 }
@@ -22,17 +23,20 @@ stack_init (stack_ref _self) {
 void
 _object_dealloc_stack (object_ref _self) {
 	struct stack *self = _self;
+	TYPE_CHECK(self, stack);
 	object_release (self->array);
 }
 
 void
 stack_push (stack_ref _self, object_ref obj) {
 	struct stack *self = _self;
+	TYPE_CHECK(self, stack);
 	array_add (self->array, obj);
 }
 
 void stack_pop (stack_ref _self) {
 	struct stack *self = _self;
+	TYPE_CHECK(self, stack);
 	assert (array_count (self->array) > 0);
 	array_remove (self->array, array_count (self->array) - 1);
 }
@@ -40,5 +44,6 @@ void stack_pop (stack_ref _self) {
 object_ref
 stack_top (stack_ref _self) {
 	struct stack *self = _self;
+	TYPE_CHECK(self, stack);
 	return array_object_at_index (self->array, array_count (self->array) - 1);
 }

@@ -12,6 +12,7 @@ number_ref number_create (void) {
 void number_init (number_ref _self) {
 	struct number *self = _self;
 	object_init (self);
+	self->magic_num = class_magic_number_number;
 	((struct object *)self)->object_equals = _object_equals_number;
 	((struct object *)self)->object_hash = _object_hash_number;
 }

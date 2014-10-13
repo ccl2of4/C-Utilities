@@ -2,10 +2,11 @@
 #define _object_h
 
 struct object {
+	enum class_magic_number magic_num;
+	unsigned retain_count;
 	void (*object_dealloc)(object_ref);
 	bool (*object_equals)(object_ref, object_ref);
 	int (*object_hash)(object_ref);
-	unsigned retain_count;
 };
 
 void object_init (object_ref);

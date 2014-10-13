@@ -6,6 +6,7 @@
 
 struct iterator {
 	struct object base;
+	enum class_magic_number magic_num;
 	object_ref (*iterator_next)(iterator_ref);
 	bool (*iterator_has_next)(iterator_ref);
 };

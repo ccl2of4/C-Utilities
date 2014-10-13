@@ -5,6 +5,7 @@
 
 struct queue {
 	struct object base;
+	enum class_magic_number magic_num;
 	list_ref list;
 };
 

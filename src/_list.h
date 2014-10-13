@@ -9,18 +9,21 @@ typedef void * list_iterator_ref;
 
 struct list_node {
 	struct object base;
+	enum class_magic_number magic_num;
 	struct list_node *next;
 	object_ref obj;
 };
 
 struct list {
 	struct object base;
+	enum class_magic_number magic_num;
 	unsigned count;
 	list_node_ref head;
 };
 
 struct list_iterator {
 	struct iterator base;
+	enum class_magic_number magic_num;
 	list_node_ref current_node;
 };
 

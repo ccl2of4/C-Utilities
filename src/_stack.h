@@ -5,6 +5,7 @@
 
 struct stack {
 	struct object base;
+	enum class_magic_number magic_num;
 	array_ref array;
 };
 

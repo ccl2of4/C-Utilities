@@ -6,16 +6,13 @@
 
 struct string {
 	struct object base;
+	enum class_magic_number magic_num;
 	char *c_array;
-	unsigned buffer_size;
-	unsigned length;
 };
 
 void string_init (string_ref);
 void _object_dealloc__string (object_ref);
-
-
-#define DEFAULT_SIZE 10
-#define RESIZE_FACTOR 2
+bool _object_equals__string (object_ref, object_ref);
+int _object_hash__string (object_ref);
 
 #endif

@@ -15,6 +15,7 @@ typedef enum number_type {
 
 struct number {
 	struct object base;
+	enum class_magic_number magic_num;
 	union {
 		char char_val;
 		short short_val;

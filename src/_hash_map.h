@@ -10,6 +10,7 @@ typedef void * hash_map_node;
 
 struct hash_map {
 	struct object base;
+	enum class_magic_number magic_num;
 	list_ref *array;
 	int array_length;
 	int count;
@@ -17,21 +18,17 @@ struct hash_map {
 
 struct hash_map_node {
 	struct object base;
+	enum class_magic_number magic_num;
 	object_ref key;
 	object_ref obj;
 };
 
 struct hash_map_iterator {
 	struct iterator base;
+	enum class_magic_number magic_num;
 	hash_map_ref hash_map;
 	unsigned current_idx;
 	iterator_ref current_list_iterator;
-};
-
-struct hash_map_entry {
-	struct object base;
-	object_ref key;
-	object_ref obj;
 };
 
 // hash_map
