@@ -10,6 +10,6 @@ struct stack {
 };
 
 void stack_init (stack_ref);
-void _object_dealloc_stack (object_ref);
+void _object_dealloc__stack (object_ref);
 
 #endif

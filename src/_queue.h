@@ -10,6 +10,6 @@ struct queue {
 };
 
 void queue_init (queue_ref);
-void _object_dealloc_queue (object_ref);
+void _object_dealloc__queue (object_ref);
 
 #endif

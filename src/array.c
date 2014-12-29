@@ -16,12 +16,12 @@ array_init (array_ref _self) {
 	struct array *self = _self;
 	object_init (self);
 	self->magic_num = class_magic_number_array;
-	((struct object *)self)->object_dealloc = _object_dealloc_array;
+	((struct object *)self)->object_dealloc = _object_dealloc__array;
 	array_resize (self);
 }
 
 void
-_object_dealloc_array (object_ref _self) {
+_object_dealloc__array (object_ref _self) {
 	struct array *self = _self;
 	TYPE_CHECK(self, array);
 	int i;

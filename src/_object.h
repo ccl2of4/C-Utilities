@@ -10,8 +10,8 @@ struct object {
 };
 
 void object_init (object_ref);
-void _object_dealloc_type (object_ref);
-bool _object_equals_type (object_ref, object_ref);
-int _object_hash_type (object_ref);
+void _object_dealloc__object (object_ref);
+bool _object_equals__object (object_ref, object_ref);
+int _object_hash__object (object_ref);
 
 #endif

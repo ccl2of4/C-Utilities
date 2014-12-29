@@ -13,12 +13,12 @@ void number_init (number_ref _self) {
 	struct number *self = _self;
 	object_init (self);
 	self->magic_num = class_magic_number_number;
-	((struct object *)self)->object_equals = _object_equals_number;
-	((struct object *)self)->object_hash = _object_hash_number;
+	((struct object *)self)->object_equals = _object_equals__number;
+	((struct object *)self)->object_hash = _object_hash__number;
 }
 
 bool
-_object_equals_number (object_ref _self, object_ref _other) {
+_object_equals__number (object_ref _self, object_ref _other) {
 	struct number *self = _self;
 	struct number *other = _other;
 	if (self->number_type != other->number_type) return false;
@@ -41,7 +41,7 @@ _object_equals_number (object_ref _self, object_ref _other) {
 }
 
 int
-_object_hash_number (object_ref _self) {
+_object_hash__number (object_ref _self) {
 	struct number *self = _self;
 	switch (self->number_type) {
 		case number_object_char:

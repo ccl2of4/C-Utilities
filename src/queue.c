@@ -16,11 +16,11 @@ void
 queue_init (queue_ref _self) {
 	struct queue *self = _self;
 	object_init (self);
-	((struct object *)self)->object_dealloc = _object_dealloc_queue;
+	((struct object *)self)->object_dealloc = _object_dealloc__queue;
 	self->list = list_create ();
 }
 
-void _object_dealloc_queue (object_ref _self) {
+void _object_dealloc__queue (object_ref _self) {
 	struct queue *self = _self;
 	TYPE_CHECK(self, queue);
 	object_release (self->list);

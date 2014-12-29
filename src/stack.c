@@ -16,12 +16,12 @@ stack_init (stack_ref _self) {
 	struct stack *self = _self;
 	object_init (self);
 	self->magic_num = class_magic_number_stack;
-	((struct object *)self)->object_dealloc = _object_dealloc_stack;
+	((struct object *)self)->object_dealloc = _object_dealloc__stack;
 	self->array = array_create ();
 }
 
 void
-_object_dealloc_stack (object_ref _self) {
+_object_dealloc__stack (object_ref _self) {
 	struct stack *self = _self;
 	TYPE_CHECK(self, stack);
 	object_release (self->array);

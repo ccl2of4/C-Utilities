@@ -24,7 +24,7 @@ struct array_iterator {
 // array
 void array_resize(array_ref);
 void array_init (array_ref);
-void _object_dealloc_array (object_ref);
+void _object_dealloc__array (object_ref);
 
 #define DEFAULT_SIZE 10
 #define RESIZE_FACTOR 2

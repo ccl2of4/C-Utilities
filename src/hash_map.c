@@ -31,12 +31,12 @@ hash_map_init (hash_map_ref _self) {
 	struct hash_map *self = _self;
 	object_init (self);
 	self->magic_num = class_magic_number_hash_map;
-	((struct object *)self)->object_dealloc = _object_dealloc_hash_map;
+	((struct object *)self)->object_dealloc = _object_dealloc__hash_map;
 	hash_map_resize_array (self, DEFAULT_ARRAY_LENGTH);
 }
 
 void
-_object_dealloc_hash_map (object_ref _self) {
+_object_dealloc__hash_map (object_ref _self) {
 	struct hash_map *self = _self;
 	int i;
 	TYPE_CHECK(self,hash_map);
@@ -266,7 +266,7 @@ hash_map_node_init (hash_map_node_ref _self) {
 	struct hash_map_node *self = _self;
 	object_init (self);
 	self->magic_num = class_magic_number_hash_map_node;
-	((struct object *)self)->object_dealloc = _object_dealloc_hash_map_node;
+	((struct object *)self)->object_dealloc = _object_dealloc__hash_map_node;
 }
 object_ref
 hash_map_node_get_key (hash_map_node_ref _self) {
@@ -293,7 +293,7 @@ hash_map_node_set_obj (hash_map_node_ref _self, object_ref obj) {
 	RETAINED_MEMBER_SWAP (self,obj,obj);
 }
 void
-_object_dealloc_hash_map_node (object_ref _self) {
+_object_dealloc__hash_map_node (object_ref _self) {
 	struct hash_map_node *self = _self;
 	TYPE_CHECK(self,hash_map_node);
 	hash_map_node_set_key (self,NULL);

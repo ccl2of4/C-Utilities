@@ -15,11 +15,11 @@ list_init (list_ref _self) {
 	struct list *self = _self;
 	self->magic_num = class_magic_number_list;
 	object_init (self);
-	((struct object *)self)->object_dealloc = _object_dealloc_list;
+	((struct object *)self)->object_dealloc = _object_dealloc__list;
 }
 
 void
-_object_dealloc_list (object_ref _self) {
+_object_dealloc__list (object_ref _self) {
 	struct list *self = _self;
 	TYPE_CHECK(self, list);
 	list_set_head (self, NULL);
@@ -139,7 +139,7 @@ list_node_init (list_node_ref _self) {
 	struct list_node *self = _self;
 	object_init (self);
 	self->magic_num = class_magic_number_list_node;
-	((struct object *)self)->object_dealloc = _object_dealloc_list_node;
+	((struct object *)self)->object_dealloc = _object_dealloc__list_node;
 }
 
 object_ref 
@@ -172,7 +172,7 @@ list_node_set_next (list_node_ref _self, list_node_ref _next) {
 }
 
 void
-_object_dealloc_list_node (object_ref _self) {
+_object_dealloc__list_node (object_ref _self) {
 	struct list_node* self = _self;
 	TYPE_CHECK(self, list_node);
 	list_node_set_obj (self, NULL);

@@ -31,7 +31,7 @@ struct list_iterator {
 void list_init (list_ref);
 list_node_ref list_get_head (list_ref);
 void list_set_head (list_ref, list_node_ref);
-void _object_dealloc_list (object_ref);
+void _object_dealloc__list (object_ref);
 
 // list_node
 list_node_ref list_node_create (void);
@@ -40,7 +40,7 @@ void list_node_set_next (list_node_ref, list_node_ref);
 object_ref list_node_get_obj (list_node_ref);
 void list_node_set_obj (list_node_ref, object_ref);
 void list_node_init (list_node_ref);
-void _object_dealloc_list_node (object_ref);
+void _object_dealloc__list_node (object_ref);
 
 // list_iterator
 list_iterator_ref list_iterator_create (list_node_ref);

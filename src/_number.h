@@ -29,7 +29,7 @@ struct number {
 };
 
 void number_init (number_ref);
-bool _object_equals_number (object_ref, object_ref);
-int _object_hash_number (object_ref);
+bool _object_equals__number (object_ref, object_ref);
+int _object_hash__number (object_ref);
 
 #endif
