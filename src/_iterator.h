@@ -12,6 +12,7 @@ struct iterator {
 };
 
 void iterator_init (iterator_ref);
+//virtual
 object_ref _iterator_next__iterator (iterator_ref);
 bool _iterator_has_next__iterator (iterator_ref);
 

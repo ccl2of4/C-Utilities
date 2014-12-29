@@ -10,6 +10,8 @@ struct queue {
 };
 
 void queue_init (queue_ref);
+
+//override
 void _object_dealloc__queue (object_ref);
 
 #endif

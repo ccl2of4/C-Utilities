@@ -3,15 +3,9 @@
 
 #include "types.h"
 
-//inherited from object
-object_ref object_retain (object_ref);
-void object_release (object_ref);
-void object_dealloc (object_ref);
-bool object_equals (object_ref, object_ref);
-int object_hash (object_ref);
-
-
-//number
+/************
+	NUMBER
+*************/
 
 /* this class needs refactoring */
 
@@ -42,5 +36,13 @@ unsigned long number_unsigned_long_value (number_ref);
 unsigned long long number_unsigned_long_long_value (number_ref);
 float number_float_value (number_ref);
 double number_double_value (number_ref);
+
+
+//inherited from object
+object_ref object_retain (object_ref);
+void object_release (object_ref);
+void object_dealloc (object_ref);
+bool object_equals (object_ref, object_ref);
+int object_hash (object_ref);
 
 #endif

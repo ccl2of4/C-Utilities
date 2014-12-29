@@ -11,6 +11,8 @@ struct string {
 };
 
 void string_init (string_ref);
+
+//override
 void _object_dealloc__string (object_ref);
 bool _object_equals__string (object_ref, object_ref);
 int _object_hash__string (object_ref);
