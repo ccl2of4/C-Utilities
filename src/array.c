@@ -108,7 +108,10 @@ array_index_of_object(array_ref _self, object_ref obj)
 	struct array *self = _self;
 	TYPE_CHECK(self, array);
 	TYPE_CHECK(obj, object);
-	assert(!"Method not implemented.");
+	int idx = 0;
+	while (!object_equals (obj, array_object_at_index (self, idx)))
+		++idx;
+	return idx;
 }
 
 object_ref
