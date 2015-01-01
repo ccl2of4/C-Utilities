@@ -6,6 +6,7 @@
 /***************
 	HASH MAP
 ***************/
+typedef void * hash_map_ref;
 
 hash_map_ref hash_map_create (void);
 object_ref hash_map_get (hash_map_ref, object_ref);

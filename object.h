@@ -6,6 +6,7 @@
 /*************
 	OBJECT
 *************/
+typedef void * object_ref;
 
 object_ref object_create (void);
 

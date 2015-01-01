@@ -6,6 +6,7 @@
 /************
 	STACK
 ************/
+typedef void * stack_ref;
 
 stack_ref stack_create (void);
 void stack_push (stack_ref, object_ref);

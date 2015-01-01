@@ -1,5 +1,5 @@
-#ifndef macros_h
-#define macros_h
+#ifndef utils_h
+#define utils_h
 
 #include <stdlib.h>
 #include <stdio.h>

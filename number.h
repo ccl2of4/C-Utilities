@@ -6,6 +6,7 @@
 /************
 	NUMBER
 *************/
+typedef void * number_ref;
 
 /* this class needs refactoring */
 

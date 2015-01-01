@@ -6,6 +6,7 @@
 /*************
 	STRING
 *************/
+typedef void * string_ref;
 
 string_ref string_create (void);
 string_ref string_create_with_c_str (char *);

@@ -6,6 +6,7 @@
 /***********
 	ARRAY
 ************/
+typedef void * array_ref;
 
 array_ref array_create (void);
 object_ref array_object_at_index (array_ref, unsigned);

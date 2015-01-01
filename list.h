@@ -6,6 +6,7 @@
 /***********
 	LIST
 ***********/
+typedef void * list_ref;
 
 list_ref list_create (void);
 object_ref list_get (list_ref, unsigned);

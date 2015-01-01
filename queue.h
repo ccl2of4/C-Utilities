@@ -6,6 +6,7 @@
 /************
 	QUEUE
 ************/
+typedef void * queue_ref;
 
 queue_ref queue_create (void);
 void queue_push (queue_ref, object_ref);

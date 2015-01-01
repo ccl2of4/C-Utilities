@@ -6,6 +6,7 @@
 /***************
 	ITERATOR
 ****************/
+typedef void * iterator_ref;
 
 // abstract class -- cannot be instantiated as there is not "create" method
 object_ref iterator_next (iterator_ref); //virtual
